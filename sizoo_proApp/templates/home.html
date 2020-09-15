@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="../static/home.css" rel="stylesheet" />
+    <title>Document</title>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="header">
+            <img src="" alt="logo" width="500" height="200">
+        </div>
+            <div class="main_container">
+                <div class="picture_container">
+                    <img src="" alt="intro_picture" width="300" height="300">
+                </div>
+                <div class="log_in_container">
+                    <form action="{% url 'home' %}" method="POST" name='Login'>
+                    {% csrf_token %}
+                        <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
+                        <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
+                        <button class="button_login" type="submit">login</button>
+                    </form>
+                    <button id="sign_up_open">sign up</button>
+                </div>
+                <div class="sign_up_modal_container hidden">
+                    <div class="modal_overlay"></div>
+                    <div class="sign_up_contents">
+                        <form method="POST" name='SignUp'>
+                        {% csrf_token %}
+                            <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
+                            <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>
+                            <input type="text" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
+                            <span>Gender :</span>
+                            <input type="radio" id="new_user_gender" name="user_gender" value="1">Male
+                            <input type="radio" id="new_user_gender" name="user_gender" value="0">Female<br>
+                            <input type="text" id="new_user_email" name="user_email" placeholder="E-MAIL"><br>
+                            <button>sign up!</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        <div class="footer">
+            Company
+        </div>
+    </div>
+    
+    <script>
+        const openButton = document.getElementById("sign_up_open");
+        const modal = document.querySelector(".sign_up_modal_container");
+        const overlay = modal.querySelector(".modal_overlay");
+        const closeBtn = modal.querySelector("button");
+        const openModal = () => {
+            modal.classList.remove("hidden");
+        }
+        const closeModal = () => {
+            modal.classList.add("hidden");
+        }
+        overlay.addEventListener("click", closeModal);
+        closeBtn.addEventListener("click", closeModal);
+        openButton.addEventListener("click", openModal);
+    </script>
+</body>
+</html>
