@@ -1,3 +1,5 @@
 # chach files #
-sizoo_proApp/__pychace__/*
-sizoo_proProject/__pychace__/*
+
+sizoo_proApp/__pycache__
+sizoo_proProject/__pycache__
+sizoo_proApp/migrations/__pycache__
