@@ -14,16 +14,22 @@
         </div>
             <div class="main_container">
                 <div class="picture_container">
-                    <img src="" alt="intro_picture" width="300" height="300">
+                    <figure>
+                        <img src="../imges/jordan_1.png" alt="intro_picture_1">
+                        <img src="../imges/spacehippie_1.png" alt="intro_picture_2">
+                        <img src="../imges/yeeze350_1.png" alt="intro_picture_3">
+                    </figure>
                 </div>
                 <div class="log_in_container">
                     <form action="{% url 'home' %}" method="POST" name='Login'>
                     {% csrf_token %}
                         <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
-                        <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
+                        <input type="password" id="user_pw" name="user_pw" placeholder="PW"><br>
                         <button class="button_login" type="submit">login</button>
                     </form>
-                    <button id="sign_up_open">sign up</button>
+                    <p class="message_signup">Not resgisterd?
+                        <a id="sign_up_open" href="#">Sign up</a>
+                    </p>
                 </div>
                 <div class="sign_up_modal_container hidden">
                     <div class="modal_overlay"></div>
@@ -33,9 +39,11 @@
                             <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
                             <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>
                             <input type="text" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
-                            <span>Gender :</span>
-                            <input type="radio" id="new_user_gender" name="user_gender" value="1">Male
-                            <input type="radio" id="new_user_gender" name="user_gender" value="0">Female<br>
+                            <div>
+                                <span>Gender :</span>
+                                <input type="radio" id="new_user_gender" name="user_gender" value="1">Male
+                                <input type="radio" id="new_user_gender" name="user_gender" value="0">Female<br>
+                            </div>
                             <input type="text" id="new_user_email" name="user_email" placeholder="E-MAIL"><br>
                             <button>sign up!</button>
                         </form>
@@ -43,7 +51,7 @@
                 </div>
             </div>
         <div class="footer">
-            Company
+            <p>Company</p>
         </div>
     </div>
     
