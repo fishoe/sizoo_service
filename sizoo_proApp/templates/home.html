@@ -26,9 +26,13 @@
                     {% csrf_token %}
                         <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
                         <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
-                        {% if error.state %}
-                            <h2>{{error.msg}}</h2>
-                        {% endif %}
+                        <div class="validation_login">
+                            {% if error.state %}
+                                <p>{{error.msg}}</p>
+                            {% else %}
+                                <p>             </p>
+                            {% endif %}
+                        </div>
                         <button class="button_login" type="submit" name="Login">login</button>
                     </form>
                     <p class="message_signup">Not resgisterd?
@@ -43,7 +47,7 @@
                             <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
                             <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>
                             <input type="text" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
-                            <div>
+                            <div class="radio_check">
                                 <span>Gender :</span>
                                 <input type="radio" id="new_user_gender" name="user_gender" value="1">Male
                                 <input type="radio" id="new_user_gender" name="user_gender" value="0">Female<br>
@@ -60,6 +64,11 @@
     </div>
     
     <script>
+        // function validateLogin() {
+        //     if $()
+        // }
+
+
         const openButton = document.getElementById("sign_up_open");
         const modal = document.querySelector(".sign_up_modal_container");
         const overlay = modal.querySelector(".modal_overlay");
@@ -73,6 +82,8 @@
         overlay.addEventListener("click", closeModal);
         closeBtn.addEventListener("click", closeModal);
         openButton.addEventListener("click", openModal);
+
+
     </script>
 </body>
 </html>
