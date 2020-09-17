@@ -29,8 +29,6 @@
                         <div class="validation_login">
                             {% if error.state %}
                                 <p>{{error.msg}}</p>
-                            {% else %}
-                                <p>             </p>
                             {% endif %}
                         </div>
                         <button class="button_login" type="submit" name="Login">login</button>
@@ -48,9 +46,8 @@
                             <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>
                             <input type="text" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
                             <div class="radio_check">
-                                <span>Gender :</span>
-                                <input type="radio" id="new_user_gender" name="user_gender" value="1">Male
-                                <input type="radio" id="new_user_gender" name="user_gender" value="0">Female<br>
+                                <label for="maleLabel" id="male">Male</label><input type="radio" id="maleLabel" name="user_gender" value="1">
+                                <label for="femaleLabel" id="female">Female</label><input type="radio" id="femaleLabel" name="user_gender" value="0"><br>
                             </div>
                             <input type="text" id="new_user_email" name="user_email" placeholder="E-MAIL"><br>
                             <button type="submit" name="SignUp">sign up!</button>
