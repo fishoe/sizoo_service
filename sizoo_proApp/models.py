@@ -23,11 +23,11 @@ class ShoesData(models.Model):
     Model_name = models.CharField(max_length=255)
     Model_code = models.CharField(max_length=255)
     Model_lineUp = models.ForeignKey(LineUp,on_delete = models.DO_NOTHING,related_name='Line_Up_models')
-
+    
     # variables from UserInfo 
     # ShoesData_ID = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='ShoesData_ID')#외래키 쓰면 안됩니다. 
     # ShoesData_Gender = models.ForeignKey(UserInfo, on_delete=models.DO_NOTHING, related_name='ShoesData_Gender')#슈 젠더가 왜 유저의 키를 받죠?
-
+    
     # variables from ShoesExp
     # ShoesData_Brand = models.ForeignKey(ShoesExp, on_delete=models.DO_NOTHING, related_name='ShoesData_Brand')
     # ShoesData_Model_Num = models.ForeignKey(ShoesExp, on_delete=models.DO_NOTHING, related_name='ShoesData_Model_Num')
@@ -36,7 +36,7 @@ class ShoesData(models.Model):
     # * How connect Shoes Model Infomations? *
     
     # variables from LineUp
-
+    
     # ShoesData_Width = models.ForeignKey(LineUp, on_delete=models.CASCADE, related_name='ShoesData_Width')
     # ShoesData_Length = models.ForeignKey(LineUp, on_delete=models.CASCADE, related_name='ShoesData_Length')
     # ShoesData_Toehil = models.ForeignKey(LineUp, on_delete=models.CASCADE, related_name='ShoesData_Toehil')
@@ -57,9 +57,9 @@ class ShoesExp(models.Model):
     # variable from UserInfo 
     # ShoesExp_ID = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='ShoesExp_ID')#신발 경험
     # foreign key from shoe, user
-    shoesExp_user = models.ForeignKey(UserInfo, on_delete = models.DO_NOTHING, related_name='user_shoes') #원본 객체가 지워져도 여기 정보는 지워지면 안됩니다.
-    shoesExp_shoe = models.ForeignKey(ShoesData, on_delete = models.DO_NOTHING, related_name='exps') #이하 동문
-
+    ShoesExp_User = models.ForeignKey(UserInfo, on_delete = models.DO_NOTHING, related_name='user_shoes') #원본 객체가 지워져도 여기 정보는 지워지면 안됩니다.
+    ShoesExp_Shoe = models.ForeignKey(ShoesData, on_delete = models.DO_NOTHING, related_name='exps') #이하 동문
+    
     # own variables
     '''
     여기도 비슷하게 사이즈 말고는
@@ -69,4 +69,3 @@ class ShoesExp(models.Model):
     # ShoesExp_Brand = models.CharField(max_length=255)
     # ShoesExp_Model_Num = models.CharField(max_length=255)
     ShoesExp_Size = models.IntegerField() #이거 빼고는 다 날려도 될거 같아요
-    
