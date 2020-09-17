@@ -43,9 +43,9 @@
                             <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
                             <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>
                             <input type="text" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
-                            <div class="row">
-                                <label for="maleLabel" id="male">Male</label><input type="radio" id="maleLabel" name="user_gender" value="1"/>
-                                <label for="femaleLabel" id="female">Female</label><input type="radio" id="femaleLabel" name="user_gender" value="0"/><br>
+                            <div class="radio_check">
+                                <label for="maleLabel" id="male">Male</label><input type="radio" id="maleLabel" name="user_gender" value="1">
+                                <label for="femaleLabel" id="female">Female</label><input type="radio" id="femaleLabel" name="user_gender" value="0"><br>
                             </div>
                             <input type="text" id="new_user_email" name="user_email" placeholder="E-MAIL"><br>
                             <button type="submit" name="run_SignUp">sign up!</button>
@@ -59,6 +59,11 @@
     </div>
     
     <script>
+        // function validateLogin() {
+        //     if $()
+        // }
+
+
         const openButton = document.getElementById("sign_up_open");
         const modal = document.querySelector(".sign_up_modal_container");
         const overlay = modal.querySelector(".modal_overlay");
@@ -72,6 +77,8 @@
         overlay.addEventListener("click", closeModal);
         closeBtn.addEventListener("click", closeModal);
         openButton.addEventListener("click", openModal);
+
+
     </script>
 </body>
 </html>
