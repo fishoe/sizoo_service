@@ -8,9 +8,7 @@
     <title>Size to Size</title>
 </head>
 <body>
-    {% if error.state %}
-        <h2>{{error.msg}}</h2>
-    {% endif %}
+    
     <div class="wrapper">
         <div class="header">
             <img src="" alt="logo" width="500" height="200">
@@ -28,6 +26,9 @@
                     {% csrf_token %}
                         <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
                         <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
+                        {% if error.state %}
+                            <h2>{{error.msg}}</h2>
+                        {% endif %}
                         <button class="button_login" type="submit" name="Login">login</button>
                     </form>
                     <p class="message_signup">Not resgisterd?

@@ -44,7 +44,7 @@ def login(request):
     
     # some variables before try function
     user_search = User.objects.filter(username=user_id)
-    #userinfo_user = auth.authenticate(username=user_id, password=user_pw)
+    userinfo_user = auth.authenticate(username=user_id, password=user_pw)
     
     
     try:
@@ -54,10 +54,10 @@ def login(request):
             raise Exception('ID_PW_MISSING')
         
         # ID validate inspection
-        if user_search == None:
+        if len(user_search) == 0:
             
             raise Exception('ID_NOT_EXIST')
-        userinfo_user = auth.authenticate(username=user_id, password=user_pw)
+        
         # PW validate inspection
         if userinfo_user == None:
             
@@ -98,7 +98,7 @@ def signup(request):
     user_pw_check = request.POST['user_pw_check']
     
     # UserInfo variables
-    userinfo_gender = request.POST['user_gender']
+    userinfo_gender = request.POST.get('user_gender')
     userinfo_email = request.POST['user_email']
     
     # some variables before try function
@@ -137,7 +137,7 @@ def signup(request):
             raise Exception('Gender_CHECK')
         
         # Email validate inspection 
-        if email_search == None:
+        if len(email_search) != 0:
             
             raise Exception('EMAIL_EXIST')
         
