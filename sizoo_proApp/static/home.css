@@ -108,12 +108,14 @@ button {
 .validation_login {
     /* position: absolute; */
     width: 100%;
-    height: 50px;
+    height: 40px;
     /* height: 20%; */
-    margin: 0 0 5px 0;
+    margin: 0 0 0 0;
 }
 
 .validation_login p {
+    position: absolute;
+    top: 46%;
     padding: 0 0 0 15px;
     font-size: 0.9rem;
 }
@@ -191,6 +193,36 @@ button {
     box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 6px 6px rgba(0,0,0,0.23);
 }
 
+.row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width:100%;
+    height:100%;
+    margin: 10px 0;
+    height:30px;
+}
+
+
+.row #female{
+    margin-left:20px;
+}
+.row #maleLabel{
+    margin:0;
+    width:40px;
+    height:15px;
+    cursor: pointer;
+}
+.row #femaleLabel{
+    margin:0;
+    width:40px;
+    height:15px;
+    cursor: pointer;
+}
+
+
+
 .sign_up_contents form input {
     margin: 0 0 10px;
     outline: 0;
@@ -200,6 +232,7 @@ button {
     padding: 15px;
     box-sizing: border-box;
     font-size: 14px;
+    cursor: pointer;
 }
 
 /* .sign_up_contents form div #new_user_gender {
