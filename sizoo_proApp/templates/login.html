@@ -8,9 +8,9 @@
 </head>
 <body>
     <h2>Shoe Rack</h2>
-    {% comment %} {% if UserInfo_User.is_authenticated %}
-        <h4>Welcome {{UserInfo_User.get_username}}!
-        <a href="{% url 'logout' %}">logouts</a></h4> {% endcomment %}
+    {% if user.is_authenticated %}
+    <h4>Welcome {{user.get_username}}!
+    <a href="{% url 'logout' %}">logouts</a></h4>
     <br>
     <br>
     <div class="ShoeRack_container">
@@ -21,7 +21,7 @@
             <br>
             <label>Model Number</label>
             <br>
-            <input type="text" id="user_id" name="model_number" placeholder="input model number">
+            <input type="text" id="user_id" name="model_name" placeholder="input model name">
             <br>
             <label>Shoes Size Select</label>
             <br>
@@ -52,6 +52,6 @@
             <button class="button_Measure" type="submit" name="run_Measure">Measure!</button>
         </form>
     </div>
-    {% comment %} {% endif %} {% endcomment %}
+    {% endif %}
 </body>
 </html>

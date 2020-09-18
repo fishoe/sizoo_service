@@ -22,7 +22,7 @@ class LineUp(models.Model):
 class ShoesData(models.Model):
     Model_name = models.CharField(max_length=255)
     Model_code = models.CharField(max_length=255)
-    Model_lineUp = models.ForeignKey(LineUp,on_delete = models.DO_NOTHING,related_name='Line_Up_models')
+    Model_lineUp = models.ForeignKey(LineUp, on_delete = models.DO_NOTHING, related_name='Line_Up_models')
     
     # variables from UserInfo 
     # ShoesData_ID = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='ShoesData_ID')#외래키 쓰면 안됩니다. 
