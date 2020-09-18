@@ -22,7 +22,7 @@
                     </figure>
                 </div>
                 <div class="log_in_container">
-                    <form action="{% url 'home' %}" method="POST">
+                    <form action="{% url 'home' %}" method="POST" name="Login">
                     {% csrf_token %}
                         <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
                         <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
@@ -51,7 +51,7 @@
                                 <label for="femaleLabel" id="female">Female</label><input type="radio" id="femaleLabel" name="user_gender" value="0"><br>
                             </div>
                             <input type="text" id="new_user_email" name="user_email" placeholder="E-MAIL"><br>
-                            <button type="submit" name="SignUp">sign up!</button>
+                            <button type="submit" name="run_SignUp">sign up!</button>
                         </form>
                     </div>
                 </div>
@@ -62,11 +62,6 @@
     </div>
     
     <script>
-        // function validateLogin() {
-        //     if $()
-        // }
-
-
         const openButton = document.getElementById("sign_up_open");
         const modal = document.querySelector(".sign_up_modal_container");
         const overlay = modal.querySelector(".modal_overlay");
