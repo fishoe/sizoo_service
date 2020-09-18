@@ -73,10 +73,9 @@ def login(request):
         # login
         auth.login(request, userinfo_user)
         
-        user_pk = {'user_pk':userinfo_user}
         
         # result
-        result = render(request, 'login.html', user_pk)
+        result = render(request, 'login.html')
         
         
     except Exception as e:
@@ -170,10 +169,9 @@ def signup(request):
         # login after signup
         auth.login(request, userinfo_user)                                      
         
-        user_pk = {'user_pk':userinfo_user}
         
         # result
-        result = render(request, 'login.html', user_pk)
+        result = render(request, 'login.html')
         
         
     except Exception as e:
@@ -225,7 +223,7 @@ def shoeadd(request):
     shoesexp_shoe = request.POST['model_number']
     shoesexp_size = request.POST.get('shoes_size')
     
-    shoes_search = LineUp.objects.filter(LineUp_Model_Code=shoesexp_shoe)
+    shoes_search = ShoesData.objects.filter(Model_name=shoesexp_shoe)
     
     try:
         if len(shoesexp_shoe) != 0:
@@ -267,9 +265,9 @@ def shoedelete(request, shoe_context):
     return render(request, 'login.html', shoe_context)
 
 
-def shoemeasure(request, user_pk, shoe_context):
+def shoemeasure(request, shoe_context):
     
-    shoesexp_user = UserInfo.objects.get(UserInfo_User=user_pk['user_pk'])
+    shoesexp_user = UserInfo.objects.get(UserInfo_User=User)
     ShoesExp.objects.create(
         ShoesExp_User = shoesexp_user,
         ShoesExp_Shoe = shoe_context['shoesexp_shoe'], 
@@ -279,7 +277,7 @@ def shoemeasure(request, user_pk, shoe_context):
     return render(request, 'result.html')
 
 
-def shoerack(request, user_pk):
+def shoerack(request):
     
     
     if request.method == 'POST':
@@ -296,7 +294,7 @@ def shoerack(request, user_pk):
             
             if 'Measure' in request.POST:
                 
-                result = shoemeasure(request, user_pk, shoe_context)
+                result = shoemeasure(request, shoe_context)
     
     
     return result
