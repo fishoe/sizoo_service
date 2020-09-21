@@ -15,7 +15,8 @@ def predict(user, tgt):
     tgt_brand = tgt_lineup.LineUp_Brand
 
     #get user shoe exp 
-    user_shoe_query = ShoesExp.objects.get(ShoesExp_User_id = user).values('ShoesExp_Shoe__Model_lineUp__LineUp_Model_Code','ShoesExp_Size')
+    user_shoe_query = ShoesExp.objects.filter(ShoesExp_User_id = user)
+    user_shoe_query = user_shoe_query.values_list('ShoesExp_Shoe__Model_lineUp__LineUp_Model_Code','ShoesExp_Size')
     user_shoe_sizes = {}
     
     #user shoes size dict fill list
@@ -37,57 +38,82 @@ def predict(user, tgt):
     #Sol 1
 
     #get users and vusers who have model_lineUp
-    ref_users = ShoesExp.objects.filter(ShoesExp__Model_lineUp = tgt_lineup).values_list('ShoesExp_User_id',flat=True)
-    ref_users = list(set(ref_users))
-    ref_vusers = ShoesExp.objects.filter(ShoesExp__Model_lineUp = tgt_lineup).values_list('ShoesExp_vuser',flat=True)
-    ref_vusers = list(set(ref_vusers))
+    ref_users_raw = ShoesExp.objects.filter(ShoesExp_Shoe__Model_lineUp = tgt_lineup).values_list('ShoesExp_User_id','ShoesExp_vuser')
+    ref_users = []
+    for i in ref_users_raw:
+        t = None
+        if i[0] is None :
+            t = (1,i[1])
+        else :
+            t = (0,i[0])
+        ref_users.append(t)
+    # print(ref_users)
+    # ref_vusers = ShoesExp.objects.filter(ShoesExp_Shoe__Model_lineUp = tgt_lineup).values_list('ShoesExp_vuser',flat=True)
+    # print('q2:',ref_vusers)
+    # ref_vusers = list(set(ref_vusers))
+    # print(ref_vusers)
 
     ref_users_sizes = []
     ref_count = []
     
     for i in ref_users:
-        q = ShoesExp.objects.filter(ShoesExp_User_id=i).filter(ShoesExp_Shoe__Model_lineUp__LineUp_Model_Code__in = user_shoe_list)
+        q=None
+        if i[0] is 0 :
+            q = ShoesExp.objects.filter(ShoesExp_User_id=i[1]).filter(ShoesExp_Shoe__Model_lineUp__LineUp_Model_Code__in = user_shoe_list)
+        else :
+            q = ShoesExp.objects.filter(ShoesExp_vuser=i[1]).filter(ShoesExp_Shoe__Model_lineUp__LineUp_Model_Code__in = user_shoe_list)
         t = {}
         for j in q :
-            t[j.LineUp_Model_Code] = j.ShoesExp_Size
+            t[j.ShoesExp_Shoe.Model_lineUp.LineUp_Model_Code] = j.ShoesExp_Size
         ref_users_sizes.append(t)
         ref_count.append(len(t.keys()))
 
-    for i in ref_vusers:
-        q = ShoesExp.objects.filter(ShoesExp_vuser=i).filter(ShoesExp_Shoe__Model_lineUp__LineUp_Model_Code__in = user_shoe_list)
-        t = {}
-        for j in q :
-            t[j.LineUp_Model_Code] = j.ShoesExp_Size
-        ref_users_sizes.append(t)
-        ref_count.append(len(t.keys()))
+    # for i in ref_vusers:
+    #     q = ShoesExp.objects.filter(ShoesExp_vuser=i).filter(ShoesExp_Shoe__Model_lineUp__LineUp_Model_Code__in = user_shoe_list)
+    #     t = {}
+    #     for j in q :
+    #         t[j.ShoesExp_Shoe.Model_lineUp.LineUp_Model_Code] = j.ShoesExp_Size
+    #     ref_users_sizes.append(t)
+    #     ref_count.append(len(t.keys()))
 
     #cal adjval from user size
     adjvallist = []
-    for i in ref_users_sizes:
+    for idx,i in enumerate(ref_users_sizes):
+        # print(i)
+        if ref_count[idx] == 0:
+            adjvallist.append(0)
+            continue
         ks = list(i.keys())
         t = 0
-        for j in keys:
+        for j in ks:
             t += user_shoe_sizes[j] - i[j]
-        t /= len(keys)
+        t /= len(ks)
 
         adjvallist.append(t)
 
+    # print(adjvallist)
     #find most likely user
+    # print(ref_users)
+    # print(ref_count)
     mxcnt = max(ref_count)
     ref_mx_users=[]
     if mxcnt > 0:
-        ref_mx_users = [i for i,val in enumerate(ref_users_sizes) if val==mxcnt]
+        ref_mx_users = [i for i,val in enumerate(ref_count) if val==mxcnt]
 
+    # print(mxcnt)
     result = 0
+
+    # print(ref_mx_users)
+
 
     #find the same vector in db
     if len(ref_mx_users) > 0:
         for i in ref_mx_users:
             q = None
-            if i < len(ref_users) :
-                q = ShoesExp.objects.filter(ShoesExp_User_id=ref_users[i])
+            if ref_users[i][0] is 0 :
+                q = ShoesExp.objects.filter(ShoesExp_User_id=ref_users[i][1])
             else :
-                q = ShoesExp.objects.filter(ShoesExp_vuser=ref_users[i-len(ref_users)])
+                q = ShoesExp.objects.filter(ShoesExp_vuser=ref_users[i][1])
             q= q.filter(ShoesExp_Shoe__Model_lineUp=tgt_lineup)
             
             t=0
@@ -95,9 +121,11 @@ def predict(user, tgt):
                 t+=j.ShoesExp_Size
 
             t/=len(q)
+            # print(t,adjvallist[i])
+            # print(ref_users[i])
             result += t + adjvallist[i]
         
-        result/=len(ref_sizes)
+        result/=len(ref_mx_users)
         adj = result % 5
         result = (result//5)*5
         if adj >= 3:
