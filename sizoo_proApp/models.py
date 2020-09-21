@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 class UserInfo(models.Model):
     # own variables
     UserInfo_User = models.OneToOneField(User, on_delete=models.CASCADE, related_name='UserInfo_User')#쟝고 기본 유저정보 상속
-    
     UserInfo_Gender = models.IntegerField() #유저 성별 정보
     UserInfo_Email = models.CharField(max_length=255) #유저 이메일
 
