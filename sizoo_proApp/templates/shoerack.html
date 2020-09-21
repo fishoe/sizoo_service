@@ -93,7 +93,6 @@
                 <br>
                 <div class="tableList">
                     <table>
-                    
                         <tr>
                             <th>Brand</th>
                             <th>Product</th>
@@ -101,16 +100,12 @@
                             <th>&nbsp;</th>
                         </tr>
                         {% csrf_token %}
-                        
-                        
                         {% for row in shoesdata %}
                         <tr>
                             {% comment %} <td>{{brand}}</td>
                             <td>{{row.Model_name}}</td> {% endcomment %}
-                            
                             <td>{{row.0.LineUp_Brand}}</td>
-                            
-                            <td>{{row.1.Model_name}}</td>
+                            <td>{{row.2.Model_name}}</td>
                             <td>{{row.2.ShoesExp_Size}}</td>
                             <td>
                                 <form action="#" method="POST">
@@ -118,10 +113,8 @@
                                     <input type="hidden" name="user_id" value="{{user.id}}"/>
                                 </form>
                             </td>
-                            
                         </tr>
                         {% endfor %}
-                        
                     </table>
                 </div>
                 <!-- {% if state %}
@@ -144,5 +137,27 @@
         </div>
         {% endif %}
     </div>
+<!--     
+    <div class="test">
+        <textarea id="names" style="visibility: hidden;">
+            {% for row in shoesdataAll.all %}
+                {{row.Model_name}},
+            {% endfor %}
+        </textarea>
+    </div>
+    <script>
+        const shoesData = document.getElementById("names");
+        alert(shoesData.textContent);
+        var shoesDataList = [];
+        var datas = shoesData.textContent.split(',');
+        var i = 0;
+        while(i < (datas.length-1)) {
+            var data = datas[i].trim();
+            shoesDataList.push(data);
+            console.log(data);
+            i++;
+        };
+        console.log(shoesDataList);
+    </script> -->
 </body>
 </html>

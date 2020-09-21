@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="../static/home.css" rel="stylesheet" />
+    <link href="../static/home.css" rel="stylesheet" type="text/css"/>
     <title>Size to Size</title>
 </head>
 <body>
-    
     <div class="wrapper">
         <div class="header">
             <img src="" alt="logo" width="500" height="200">
@@ -24,11 +23,14 @@
                 <div class="log_in_container">
                     <form action="{% url 'home' %}" method="POST">
                     {% csrf_token %}
-                        <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
+                        <!-- onchange할 때 이 값을 가져올 수 있는지 확인하면 댐 input이 변하면 동작하는거-->
+                        <input type="text" id="user_id" name="user_id" placeholder="ID" onchange=""><br>
                         <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
-                        {% if error.state %}
-                            <h2>{{error.msg}}</h2>
-                        {% endif %}
+                        <div class="validation_login">
+                            {% if error.state %}
+                                <p>{{error.msg}}</p>
+                            {% endif %}
+                        </div>
                         <button class="button_login" type="submit" name="run_Login">login</button>
                     </form>
                     <p class="message_signup">Not resgisterd?
@@ -41,8 +43,8 @@
                         <form action="{% url 'home' %}" method="POST" >
                         {% csrf_token %}
                             <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
-                            <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>
-                            <input type="text" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
+                            <input type="password" id="new_user_pw" name="user_pw" placeholder="PW"><br>
+                            <input type="password" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
                             <div class="radio_check">
                                 <label for="maleLabel" id="male">Male</label><input type="radio" id="maleLabel" name="user_gender" value="1">
                                 <label for="femaleLabel" id="female">Female</label><input type="radio" id="femaleLabel" name="user_gender" value="0"><br>
@@ -59,11 +61,6 @@
     </div>
     
     <script>
-        // function validateLogin() {
-        //     if $()
-        // }
-
-
         const openButton = document.getElementById("sign_up_open");
         const modal = document.querySelector(".sign_up_modal_container");
         const overlay = modal.querySelector(".modal_overlay");
