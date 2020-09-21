@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 class UserInfo(models.Model):
     # own variables
     UserInfo_User = models.OneToOneField(User, on_delete=models.CASCADE, related_name='UserInfo_User')#쟝고 기본 유저정보 상속
-    
     UserInfo_Gender = models.IntegerField() #유저 성별 정보
     UserInfo_Email = models.CharField(max_length=255) #유저 이메일
 
@@ -21,7 +20,7 @@ class LineUp(models.Model):
 
 class ShoesData(models.Model):
     Model_name = models.CharField(max_length=255)
-    Model_code = models.CharField(max_length=255)
+    Model_code = models.CharField(max_length=255,unique=True)
     Model_lineUp = models.ForeignKey(LineUp, on_delete = models.DO_NOTHING, related_name='Line_Up_models')
     
     # variables from UserInfo 
@@ -57,7 +56,9 @@ class ShoesExp(models.Model):
     # variable from UserInfo 
     # ShoesExp_ID = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='ShoesExp_ID')#신발 경험
     # foreign key from shoe, user
-    ShoesExp_User = models.ForeignKey(UserInfo, on_delete = models.DO_NOTHING, related_name='user_shoes') #원본 객체가 지워져도 여기 정보는 지워지면 안됩니다.
+    ShoesExp_User = models.ForeignKey(UserInfo, on_delete = models.DO_NOTHING, related_name='user_shoes', null=True) #원본 객체가 지워져도 여기 정보는 지워지면 안됩니다.
+    ShoesExp_vuser = models.IntegerField(max_length=255,null=True)
+
     ShoesExp_Shoe = models.ForeignKey(ShoesData, on_delete = models.DO_NOTHING, related_name='exps') #이하 동문
     
     # own variables

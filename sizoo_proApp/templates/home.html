@@ -22,7 +22,7 @@
                     </figure>
                 </div>
                 <div class="log_in_container">
-                    <form action="{% url 'home' %}" method="POST" name="Login">
+                    <form action="{% url 'home' %}" method="POST">
                     {% csrf_token %}
                         <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
                         <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
@@ -38,7 +38,7 @@
                 <div class="sign_up_modal_container hidden">
                     <div class="modal_overlay"></div>
                     <div class="sign_up_contents">
-                        <form action="{% url 'home' %}" method="POST" name='SignUp'>
+                        <form action="{% url 'home' %}" method="POST" >
                         {% csrf_token %}
                             <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
                             <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>

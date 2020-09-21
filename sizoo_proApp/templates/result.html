@@ -8,5 +8,9 @@
 </head>
 <body>
     <h1>result page</h1>
+    <form action="{% url 'result' %}" method="POST" name="Re_shoerack">
+        {% csrf_token %}
+        <button class="button_Re_shoerack" type="submit" name="run_Re_shoerack">Return to shoe rack!</button>
+    </form>
 </body>
 </html>
