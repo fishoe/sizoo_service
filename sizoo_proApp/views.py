@@ -10,24 +10,31 @@ import re
 
 ERROR_MSG = {
     # ID
-    'ID_EXIST': 'This ID already exists.',
-    'ID_NOT_EXIST': 'ID does not exist.',
+    'ID_EXIST': 'This ID already exists',
+    'ID_NOT_EXIST': 'ID does not exist',
     'ID_LENGTH': 'ID must be between 3 and 12 characters',
     
     # PW
-    'PW_CHECK': 'This PW incorrect.',
+    'PW_CHECK': 'This PW incorrect',
     'PW_LENGTH': 'PW must be between 6 and 12 characters',
     
     # ID&PW
-    'ID_PW_MISSING': 'Please check your ID or PW.',
+    'ID_PW_MISSING': 'Please check your ID or PW',
     
     # Gender
-    'Gender_CHECK': 'Please check your gender.',
+    'Gender_CHECK': 'Please check your gender',
     
     # EMAIL
-    'EMAIL_EXIST': 'This Email already exists.',
-    'EMAIL_CHECK': 'This Email format is invalid'
-}
+    'EMAIL_EXIST': 'This Email already exists',
+    'EMAIL_CHECK': 'This Email format is invalid',
+    
+    # Shoe
+    'Shoe_CHECK': 'Please check model number',
+    'Size_CHECK': 'Please check size selection',
+    
+    # LineUp
+    'LineUp_CHECK': 'Sorry, we could not find this model'
+    }
 
 
 def login(request):
@@ -65,6 +72,7 @@ def login(request):
         
         # login
         auth.login(request, userinfo_user)
+        
         
         # result
         result = render(request, 'login.html')
@@ -161,6 +169,7 @@ def signup(request):
         # login after signup
         auth.login(request, userinfo_user)                                      
         
+        
         # result
         result = render(request, 'login.html')
         
@@ -182,12 +191,12 @@ def home(request):
     
     if request.method == 'POST':
         
-        if 'Login' in request.POST:
+        if 'run_Login' in request.POST:
             
             result = login(request)
         
         
-        if 'SignUp' in request.POST:
+        if 'run_SignUp' in request.POST:
             
             result = signup(request)
     
@@ -201,3 +210,91 @@ def logout(request):
     
     return redirect('home')
 
+
+def shoeadd(request):
+    context = {
+        'error': {
+            'state': False,
+            'msg': ''
+        },
+    }
+    
+    
+    shoesexp_shoe = request.POST['model_number']
+    shoesexp_size = request.POST.get('shoes_size')
+    
+    shoes_search = ShoesData.objects.filter(Model_name=shoesexp_shoe)
+    
+    try:
+        if len(shoesexp_shoe) != 0:
+            
+            raise Exception('Shoe_CHECK')
+        
+        if shoesexp_size == None:
+            
+            raise Exception('Size_CHECK')
+        
+        if len(shoes_search) != 0:
+            
+            raise Exception('LineUp_CHECK')
+        
+        shoe_context = {
+            'state': True,
+            'shoesexp_shoe': shoesexp_shoe,
+            'shoesexp_size': shoesexp_size
+        }
+        
+        result = shoe_context
+        
+        
+    except Exception as e:
+        context['error']['state'] = True
+        context['error']['msg'] = ERROR_MSG[e.args[0]]
+        
+        # result
+        result = render(request, 'login.html', context)
+    
+    
+        return result
+
+
+def shoedelete(request, shoe_context):
+    
+    shoe_context['state'] = False
+    
+    return render(request, 'login.html', shoe_context)
+
+
+def shoemeasure(request, shoe_context):
+    
+    shoesexp_user = UserInfo.objects.get(UserInfo_User=User)
+    ShoesExp.objects.create(
+        ShoesExp_User = shoesexp_user,
+        ShoesExp_Shoe = shoe_context['shoesexp_shoe'], 
+        ShoesExp_Size = shoe_context['shoesexp_size']
+    )
+    
+    return render(request, 'result.html')
+
+
+def shoerack(request):
+    
+    
+    if request.method == 'POST':
+        
+        if 'Add' in request.POST:
+            
+            shoe_context = None
+            
+            shoeadd(request)
+            
+            if 'Delete' in request.POST:
+                
+                result = shoedelete(request, shoe_context)                   
+            
+            if 'Measure' in request.POST:
+                
+                result = shoemeasure(request, shoe_context)
+    
+    
+    return result

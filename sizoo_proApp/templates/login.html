@@ -7,6 +7,51 @@
     <title>Size to Size</title>
 </head>
 <body>
-    <h1>login</h1>
+    <h2>Shoe Rack</h2>
+    {% if user.is_authenticated %}
+    <h4>Welcome {{user.get_username}}!
+    <a href="{% url 'logout' %}">logouts</a></h4>
+    <br>
+    <br>
+    <div class="ShoeRack_container">
+        <form action="{% url 'shoerack' %}" method="POST" name="Add">
+            {% csrf_token %}
+            <br>
+            <br>
+            <br>
+            <label>Model Number</label>
+            <br>
+            <input type="text" id="user_id" name="model_name" placeholder="input model name">
+            <br>
+            <label>Shoes Size Select</label>
+            <br>
+            <select>
+                <option value="" disabled selected>Choose your size</option>
+                <option name="shoes_size" value="1">255</option>
+                <option name="shoes_size" value="2">260</option>
+                <option name="shoes_size" value="3">265</option>
+            </select>
+            <br>
+            <button class="button_Add" type="submit" name="run_Add">Add!</button>
+            <br>
+            <br>
+            {% if state %}
+                <h5>{{shoesexp_shoe}} {{shoesexp_size}}</h5>
+            {% endif %}
+        </form>
+        <br>
+        <form action="{% url 'shoerack' %}" method="POST" name="Delete">
+        {% csrf_token %}
+            <button class="button_Delete" type="submit" name="run_Deltete">Delete!</button>
+        </form>
+        <br>
+        <br>
+        <br>
+        <form action="{% url 'shoerack' %}" method="POST" name="Measure">
+        {% csrf_token %}
+            <button class="button_Measure" type="submit" name="run_Measure">Measure!</button>
+        </form>
+    </div>
+    {% endif %}
 </body>
 </html>
