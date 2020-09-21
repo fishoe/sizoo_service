@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="../static/home.css" rel="stylesheet" />
+    <link href="../static/home.css" rel="stylesheet" type="text/css"/>
     <title>Size to Size</title>
 </head>
 <body>
-    
     <div class="wrapper">
         <div class="header">
             <img src="" alt="logo" width="500" height="200">
@@ -22,17 +21,17 @@
                     </figure>
                 </div>
                 <div class="log_in_container">
-                    <form action="{% url 'home' %}" method="POST" name="Login">
+                    <form action="{% url 'home' %}" method="POST" name="login">
                     {% csrf_token %}
-                        <input type="text" id="user_id" name="user_id" placeholder="ID"><br>
+                        <!-- onchange할 때 이 값을 가져올 수 있는지 확인하면 댐 input이 변하면 동작하는거-->
+                        <input type="text" id="user_id" name="user_id" placeholder="ID" onchange="user랑 체크하는 함수"><br>
                         <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
                         <div class="validation_login">
                             {% if error.state %}
                                 <p>{{error.msg}}</p>
-                                <!-- <p>Please check your ID or PW.</p> -->
                             {% endif %}
                         </div>
-                        <button class="button_login" type="submit" name="Login">login</button>
+                        <button class="button_login" type="submit" name="run_Login">login</button>
                     </form>
                     <p class="message_signup">Not resgisterd?
                         <a id="sign_up_open" href="#">Sign up</a>
@@ -41,7 +40,7 @@
                 <div class="sign_up_modal_container hidden">
                     <div class="modal_overlay"></div>
                     <div class="sign_up_contents">
-                        <form action="{% url 'home' %}" method="POST" name='SignUp'>
+                        <form action="{% url 'home' %}" method="POST" name='signUp'>
                         {% csrf_token %}
                             <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
                             <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Size to Size</title>
+</head>
+<body>
+    <script>
+        var brand
+
+        function shoeSize() {
+            var i = 220;
+            var limitSize = 305;
+            while(i < limitSize){
+                document.write("<option name='shoes_size' value="+i+">"+i+"</option>")
+                i += 5;
+            }   
+        } 
+        
+        function getBrand() {
+            brand = document.getElementById("select_brand").value;
+        }
+        
+    </script>
+    <!-- 전체 화면 영역 -->
+    <div calss="wrapper">
+        <!-- Header : 로고, 프로필 -->
+        <!-- <h2>Shoe Rack</h2> -->
+        <div class="header">
+            <div class="logo">
+                <img src="" alt="logo" width="500" height="200">
+            </div>
+            <div class="profile">
+                {% if user.is_authenticated %}
+                <h4>Welcome {{user.get_username}}!
+                <a href="{% url 'logout' %}">logouts</a></h4>
+            </div>
+        </div>
+        <div class="main_container">
+            <div class="shoeRack_add">
+                <form action="{% url 'shoerack' %}" method="POST" name="Add">
+                    {% csrf_token %}
+                    <br>
+                    <br>
+                    <br>
+                    <table>
+                        <tr>
+                            <th>Brand</th>
+                            <th>Product</th>
+                            <th>Size</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select id="select_brand" name="brand" onchange="getBrand()">
+                                    <!-- LineUP에서 brand 가져옴 -->
+                                    {% for row in lineupAll.all %}
+                                        <option value="{{row.LineUp_Brand}}">{{row.LineUp_Brand}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select name="brand_model">
+                                    {% for row in shoesdataAll.all %}
+                                    <!-- ShoesData에서 name 가져옴 -->
+                                        <option value="{{row.Model_name}}">{{row.Model_name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <select name="size">
+                                    <option value="" disabled selected>Choose your size</option>
+                                    <script>
+                                        shoeSize()
+                                    </script>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="button_Add" type="submit" name="run_Add">Add!</button>
+                                <input type="hidden" name="user_id" value="{{user.id}}"/>
+                            </td>
+                        </tr>
+                        
+                    </table>
+                </form>
+                {% if error.state %}
+                    <h2>{{error.msg}}</h2>
+                {% endif %}
+            </div>
+            <div class="shoeRack_list">
+                <br>
+                <div class="tableList">
+                    <table>
+                        <tr>
+                            <th>Brand</th>
+                            <th>Product</th>
+                            <th>Size</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                        {% csrf_token %}
+                        {% for row in shoesExp_user.user_shoes.all %}
+                        <tr>
+                            <td>{{brand}}</td>
+                            <td>{{row.Model_name}}</td>
+                            <td>{{row.ShoesExp_Size}}</td>
+                            <td>
+                                <form action="{% url 'delete' %}" method="POST"> 
+                                    <input type="button" value="Delete!" type="submit"/>
+                                    <input type="hidden" name="user_id" value="{{user.id}}"/>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+                <!-- {% if state %}
+                    <h5>{{shoesexp_shoe}} {{shoesexp_size}}</h5>
+                {% endif %} -->
+                <br>
+                <div class="buttonList">
+                    <form action="{% url 'shoerack' %}" method="POST" name="Delete">
+                    {% csrf_token %}
+                        <button class="button_Delete" type="submit" name="run_Deltete">All Delete!</button>
+                    </form>
+                    <form action="{% url 'shoerack' %}" method="POST" name="Measure">
+                    {% csrf_token %}
+                        <button class="button_Measure" type="submit" name="run_Measure">Measure!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="test">
+        <textarea id="names" style="visibility: hidden;">
+            {% for row in shoesdataAll.all %}
+                {{row.Model_name}},
+            {% endfor %}
+        </textarea>
+    </div>
+    <script>
+        const shoesData = document.getElementById("names");
+        alert(shoesData.textContent);
+        var shoesDataList = [];
+        var datas = shoesData.textContent.split(',');
+        var i = 0;
+        while(i < (datas.length-1)) {
+            var data = datas[i].trim();
+            shoesDataList.push(data);
+            console.log(data);
+            i++;
+        };
+        console.log(shoesDataList);
+    </script>
+</body>
+</html>

@@ -1,10 +1,12 @@
+
 from django.shortcuts import render
 
 from django.shortcuts import redirect
-from .models import UserInfo, ShoesExp, LineUp, ShoesData
+from .models import UserInfo, LineUp, ShoesData, ServiceResult, ShoesExp
 from django.contrib.auth.models import User
 from django.contrib import auth
 import re
+
 # Create your views here.
 
 
@@ -28,16 +30,44 @@ ERROR_MSG = {
     'EMAIL_EXIST': 'This Email already exists',
     'EMAIL_CHECK': 'This Email format is invalid',
     
-    # Shoe
+    # Shoes
     'Shoe_CHECK': 'Please check model number',
     'Size_CHECK': 'Please check size selection',
     
-    # LineUp
-    'LineUp_CHECK': 'Sorry, we could not find this model'
+    # ShoesData
+    'ShoeData_CHECK': 'Sorry, we could not find this model',
     }
 
 
+def home(request):
+    
+    # check point
+    print("def__home")
+    
+    # result
+    result = render(request, 'home.html')
+    
+    if request.method == 'POST':
+        
+        if 'run_Login' in request.POST:     
+            
+            # result
+            result = login(request)
+            
+        if 'run_SignUp' in request.POST:    
+            
+            # result
+            result = signup(request)
+    
+    
+    return result
+
+
 def login(request):
+    
+    # check point
+    print("def__login")
+    
     context = {
         'error': {
             'state': False,
@@ -73,9 +103,17 @@ def login(request):
         # login
         auth.login(request, userinfo_user)
         
+        # All Brands from LineUp
+        lineupAll = LineUp.objects.all()
+        
+        # All Shoes from ShesData
+        shoesdataAll = ShoesData.objects.all()
+        
+        # shoerackDict
+        shoerackDict = {'lineupAll':lineupAll, 'shoesdataAll':shoesdataAll}
         
         # result
-        result = render(request, 'login.html')
+        result = render(request, 'shoerack.html', shoerackDict)
         
         
     except Exception as e:
@@ -90,6 +128,9 @@ def login(request):
 
 
 def signup(request):
+    
+    # check point
+    print("def__signup")
     
     context = {
         'error': {
@@ -163,15 +204,20 @@ def signup(request):
             UserInfo_Email = userinfo_email
             )
         
-        # send to '???' class variables 
-        # ???_?? = UserInfo.objects.get(pk=user_id)
+        # login
+        auth.login(request, userinfo_user)
         
-        # login after signup
-        auth.login(request, userinfo_user)                                      
+        # All Brands from LineUp
+        lineupAll = LineUp.objects.all()
         
+        # All Shoes from ShesData
+        shoesdataAll = ShoesData.objects.all()
+        
+        # shoerackDict
+        shoerackDict = {'lineupAll':lineupAll, 'shoesdataAll':shoesdataAll}
         
         # result
-        result = render(request, 'login.html')
+        result = render(request, 'shoerack.html', shoerackDict)
         
         
     except Exception as e:
@@ -185,33 +231,46 @@ def signup(request):
     return result
 
 
-def home(request):
-    
-    result = render(request, 'home.html')
-    
-    if request.method == 'POST':
-        
-        if 'run_Login' in request.POST:
-            
-            result = login(request)
-        
-        
-        if 'run_SignUp' in request.POST:
-            
-            result = signup(request)
-    
-    
-    return result
-
-
 def logout(request):
+    
+    # check point
+    print("def__logout")
     
     auth.logout(request)
     
     return redirect('home')
 
 
+def shoerack(request):
+    
+    # check point
+    print("def__shoerack")
+    
+    # result
+    result = render(request, 'shoerack.html')
+    
+    if request.method == 'POST':
+        
+        if 'run_Login' in request.POST:
+            
+            # result
+            result = login(request)
+            
+        if 'run_Add' in request.POST:
+            
+            # result
+            result = shoeadd(request)
+    
+    
+    return result 
+
+
+
 def shoeadd(request):
+    
+    # check point
+    print("def__shoeadd")
+    
     context = {
         'error': {
             'state': False,
@@ -219,14 +278,17 @@ def shoeadd(request):
         },
     }
     
+    # shoesexp_user = UserInfo.objects.get(pk=userpk_pk)
     
-    shoesexp_shoe = request.POST['model_number']
+    shoeFromPost = request.POST['model_name']
+    
     shoesexp_size = request.POST.get('shoes_size')
+    shoes_search = ShoesData.objects.filter(Model_name=shoeFromPost)
     
-    shoes_search = ShoesData.objects.filter(Model_name=shoesexp_shoe)
+    # shoesexp_shoe = ShoesData.objects.get(Model_name=shoeFromPost).Line_Up_models.all()
     
     try:
-        if len(shoesexp_shoe) != 0:
+        if len(shoeFromPost) == 0:
             
             raise Exception('Shoe_CHECK')
         
@@ -234,17 +296,18 @@ def shoeadd(request):
             
             raise Exception('Size_CHECK')
         
-        if len(shoes_search) != 0:
+        if len(shoes_search) == 0:
             
-            raise Exception('LineUp_CHECK')
+            raise Exception('ShoeData_CHECK')
         
-        shoe_context = {
-            'state': True,
-            'shoesexp_shoe': shoesexp_shoe,
-            'shoesexp_size': shoesexp_size
-        }
+        # # ShoesExp create
+        # ShoesExp.objects.create(
+        #     ShoesExp_User = shoesexp_user,
+        #     ShoesExp_Shoe = shoesexp_shoe,
+        #     ShoesExp_Size = int(shoesexp_size)
+        #     )
         
-        result = shoe_context
+        result = redirect('shoerack')
         
         
     except Exception as e:
@@ -252,49 +315,38 @@ def shoeadd(request):
         context['error']['msg'] = ERROR_MSG[e.args[0]]
         
         # result
-        result = render(request, 'login.html', context)
+        result = render(request, 'shoerack.html', context)
     
     
-        return result
+    return result
 
 
 def shoedelete(request, shoe_context):
     
     shoe_context['state'] = False
     
-    return render(request, 'login.html', shoe_context)
+    return render(request, 'shoerack.html', shoe_context)
 
 
-def shoemeasure(request, shoe_context):
+def shoemeasure(request):
     
-    shoesexp_user = UserInfo.objects.get(UserInfo_User=User)
-    ShoesExp.objects.create(
-        ShoesExp_User = shoesexp_user,
-        ShoesExp_Shoe = shoe_context['shoesexp_shoe'], 
-        ShoesExp_Size = shoe_context['shoesexp_size']
-    )
+    # shoesexp_user = UserInfo.objects.get(UserInfo_User=User)
+    # ShoesExp.objects.create(
+    #     ShoesExp_User = shoesexp_user,
+    #     ShoesExp_Shoe = shoe_context['shoesexp_shoe'], 
+    #     ShoesExp_Size = shoe_context['shoesexp_size']
+    # )
     
     return render(request, 'result.html')
 
 
-def shoerack(request):
-    
+def result(request):
     
     if request.method == 'POST':
         
-        if 'Add' in request.POST:
+        if 'run_Re_shoerack' in request.POST:
             
-            shoe_context = None
-            
-            shoeadd(request)
-            
-            if 'Delete' in request.POST:
-                
-                result = shoedelete(request, shoe_context)                   
-            
-            if 'Measure' in request.POST:
-                
-                result = shoemeasure(request, shoe_context)
+            result = render(request, 'shoerack.html')
     
     
     return result
