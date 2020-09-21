@@ -77,8 +77,6 @@ button {
     margin: auto;
     overflow: hidden;
 
-    /* display: flex;
-    flex-direction: column; */
 }
 
 .picture_container figure img {
@@ -97,36 +95,25 @@ button {
 }
 
 .log_in_container {
-    /* position: relative; */
     width: 40%;
     margin: auto;
 
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
 }
 
 .validation_login {
-    /* position: absolute; */
     width: 100%;
     height: 40px;
-    /* height: 20%; */
     margin: 0 0 0 0;
 }
 
 .validation_login p {
-    position: absolute;
-    top: 41%;
-    padding: 0 0 0 15px;
+    margin: 0;
+    padding: 9px 0 0 15px;
     font-size: 0.9rem;
 }
-
-/* form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-} */
 
 #user_id {
     outline: 0;
