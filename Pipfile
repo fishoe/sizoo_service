@@ -9,6 +9,7 @@ verify_ssl = true
 django = "*"
 requests = "*"
 bs4 = "*"
+django-multiforloop = "*"
 
 [requires]
 python_version = "3.8"
