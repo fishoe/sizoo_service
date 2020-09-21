@@ -1,6 +1,13 @@
 from ..models import LineUp, ShoesData, ShoesExp, UserInfo, ServiceResult
 
 def predict(user, tgt):
+    '''
+    user : pk of User(int)
+    tgt : Model_code of targetShoe(str)
+
+    return : size of tgt_shoe
+    if failed to find, return -1
+    '''
 
     #get tgt lineup
     tgt_data = ShoesData.objects.get(Model_code=tgt)
