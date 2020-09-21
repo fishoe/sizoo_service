@@ -21,7 +21,7 @@ class LineUp(models.Model):
 
 class ShoesData(models.Model):
     Model_name = models.CharField(max_length=255)
-    Model_code = models.CharField(max_length=255)
+    Model_code = models.CharField(max_length=255,unique=True)
     Model_lineUp = models.ForeignKey(LineUp, on_delete = models.DO_NOTHING, related_name='Line_Up_models')
     
     # variables from UserInfo 
@@ -57,7 +57,9 @@ class ShoesExp(models.Model):
     # variable from UserInfo 
     # ShoesExp_ID = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='ShoesExp_ID')#신발 경험
     # foreign key from shoe, user
-    ShoesExp_User = models.ForeignKey(UserInfo, on_delete = models.DO_NOTHING, related_name='user_shoes') #원본 객체가 지워져도 여기 정보는 지워지면 안됩니다.
+    ShoesExp_User = models.ForeignKey(UserInfo, on_delete = models.DO_NOTHING, related_name='user_shoes', null=True) #원본 객체가 지워져도 여기 정보는 지워지면 안됩니다.
+    ShoesExp_vuser = models.IntegerField(max_length=255,null=True)
+
     ShoesExp_Shoe = models.ForeignKey(ShoesData, on_delete = models.DO_NOTHING, related_name='exps') #이하 동문
     
     # own variables
