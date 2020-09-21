@@ -3,7 +3,7 @@ from ..models import LineUp, ShoesData, ShoesExp, UserInfo, ServiceResult
 def predict(user, tgt):
 
     #get tgt lineup
-    tgt_data = ShoesData.objects.get(id=tgt)
+    tgt_data = ShoesData.objects.get(Model_code=tgt)
     tgt_lineup = tgt_data.Model_lineUp
     tgt_brand = tgt_lineup.LineUp_Brand
 
