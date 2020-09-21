@@ -23,6 +23,10 @@
         </div>
         <div class="main_container">
             <div class="target_model">
+                <!-- {% comment %}<form action="{% url 'result' %}" method="POST" name="Re_shoerack">
+                    {% csrf_token %}
+                    <button class="button_Re_shoerack" type="submit" name="run_Re_shoerack">Return to shoe rack!</button>
+                </form> {% endcomment %} -->
                 <form autocomplete="off" action="{% url 'result'%}">
                     <div class="target_search_autocomplete">
                         <input id="target_search" type="text" name="target_model" placeholder="사이즈를 찾을 신발을 입력하세요" />
@@ -134,6 +138,7 @@
         /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
         autocomplete(document.getElementById("target_search"), shoesNames);
     </script>
+    
 </body>
 
 </html>

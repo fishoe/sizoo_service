@@ -56,14 +56,14 @@
                             <td>
                                 <select id="select_brand" name="brand" onchange="getBrand()">
                                     <!-- LineUP에서 brand 가져옴 -->
-                                    {% for row in lineupAll.all %}
+                                    {% for row in lineupAll %}
                                         <option value="{{row.LineUp_Brand}}">{{row.LineUp_Brand}}</option>
                                     {% endfor %}
                                 </select>
                             </td>
                             <td>
                                 <select name="brand_model">
-                                    {% for row in shoesdataAll.all %}
+                                    {% for row in shoesdataAll %}
                                     <!-- ShoesData에서 name 가져옴 -->
                                         <option value="{{row.Model_name}}">{{row.Model_name}}</option>
                                     {% endfor %}
@@ -85,9 +85,9 @@
                         
                     </table>
                 </form>
-                {% if error.state %}
+                {% comment %} {% if error.state %}
                     <h2>{{error.msg}}</h2>
-                {% endif %}
+                {% endif %} {% endcomment %}
             </div>
             <div class="shoeRack_list">
                 <br>
@@ -100,20 +100,21 @@
                             <th>&nbsp;</th>
                         </tr>
                         {% csrf_token %}
-                        {% for row in shoesExp_user.user_shoes.all %}
+                        {% for row in shoesdata %}
                         <tr>
-                            <td>{{brand}}</td>
-                            <td>{{row.Model_name}}</td>
-                            <td>{{row.ShoesExp_Size}}</td>
+                            {% comment %} <td>{{brand}}</td>
+                            <td>{{row.Model_name}}</td> {% endcomment %}
+                            <td>{{row.0.LineUp_Brand}}</td>
+                            <td>{{row.2.Model_name}}</td>
+                            <td>{{row.2.ShoesExp_Size}}</td>
                             <td>
-                                <form action="{% url 'delete' %}" method="POST"> 
+                                <form action="#" method="POST">
                                     <input type="button" value="Delete!" type="submit"/>
                                     <input type="hidden" name="user_id" value="{{user.id}}"/>
                                 </form>
                             </td>
                         </tr>
                         {% endfor %}
-
                     </table>
                 </div>
                 <!-- {% if state %}
@@ -125,6 +126,8 @@
                     {% csrf_token %}
                         <button class="button_Delete" type="submit" name="run_Deltete">All Delete!</button>
                     </form>
+                    <br>
+                    <br>
                     <form action="{% url 'shoerack' %}" method="POST" name="Measure">
                     {% csrf_token %}
                         <button class="button_Measure" type="submit" name="run_Measure">Measure!</button>
@@ -134,7 +137,7 @@
         </div>
         {% endif %}
     </div>
-
+<!--     
     <div class="test">
         <textarea id="names" style="visibility: hidden;">
             {% for row in shoesdataAll.all %}
@@ -155,6 +158,6 @@
             i++;
         };
         console.log(shoesDataList);
-    </script>
+    </script> -->
 </body>
 </html>
