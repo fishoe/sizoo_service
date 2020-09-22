@@ -53,6 +53,7 @@ body {
     display: flex;
     justify-content: right;
     align-items: center;
+    color: black;
 
 }
 
@@ -69,8 +70,9 @@ body {
     width:1000px;
     height: 100px;
     border:none;
-    background-color:#167dae;
-    box-shadow:1px 2px 4px #167dae;
+    border-radius: 25px;
+    background-color:rgb(223, 214, 199);
+    box-shadow:1px 2px 4px #030303;
     color:rgb(7, 7, 7); 
     text-align:center;
     font-size:14px;
@@ -84,6 +86,7 @@ body {
 
 h2 {
     text-align:center;
+    color: black;
 }
 
 table {
@@ -102,8 +105,9 @@ th {
     width:1000px;
     height: 150px;
     border:none;
-    background-color:#40a7d6;
-    box-shadow:1px 2px 4px #40a7d6;
+    border-radius: 25px;
+    background-color:#e2e4e3;
+    box-shadow:1px 2px 4px #030303;
     color:rgb(7, 7, 7); 
     text-align:center;
     font-size:14px;
