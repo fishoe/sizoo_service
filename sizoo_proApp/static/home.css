@@ -72,8 +72,8 @@ button {
 }
 
 .picture_container {
-    position: relative;
     width: 40%;
+    max-width: 300px;
     margin: auto;
     overflow: hidden;
 

@@ -25,7 +25,7 @@
                     {% csrf_token %}
                         <!-- onchange할 때 이 값을 가져올 수 있는지 확인하면 댐 input이 변하면 동작하는거-->
                         <input type="text" id="user_id" name="user_id" placeholder="ID" onchange=""><br>
-                        <input type="text" id="user_pw" name="user_pw" placeholder="PW"><br>
+                        <input type="password" id="user_pw" name="user_pw" placeholder="PW"><br>
                         <div class="validation_login">
                             {% if error.state %}
                                 <p>{{error.msg}}</p>
