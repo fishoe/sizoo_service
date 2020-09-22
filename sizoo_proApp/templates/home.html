@@ -41,8 +41,8 @@
                         <form action="{% url 'home' %}" method="POST" >
                         {% csrf_token %}
                             <input type="text" id="new_user_id" name="user_id" placeholder="ID"><br>
-                            <input type="text" id="new_user_pw" name="user_pw" placeholder="PW"><br>
-                            <input type="text" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
+                            <input type="password" id="new_user_pw" name="user_pw" placeholder="PW"><br>
+                            <input type="password" id="new_user_pw" name="user_pw_check" placeholder="PW CHECK"><br>
                             <div class="radio_check">
                                 <label for="maleLabel" id="male">Male</label><input type="radio" id="maleLabel" name="user_gender" value="1">
                                 <label for="femaleLabel" id="female">Female</label><input type="radio" id="femaleLabel" name="user_gender" value="0"><br>
