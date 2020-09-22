@@ -112,6 +112,14 @@ def login(request):
         # login
         auth.login(request, userinfo_user)
         
+        # All Brands from LineUp
+        lineupAll = LineUp.objects.all()
+        
+        # All Shoes from ShesData
+        shoesdataAll = ShoesData.objects.all()
+        
+        # shoerackDict
+        shoerackDict = {'lineupAll':lineupAll, 'shoesdataAll':shoesdataAll}
         
         # shoerack
         shoesexp_user = UserInfo.objects.filter(UserInfo_User=userinfo_user)[0]
