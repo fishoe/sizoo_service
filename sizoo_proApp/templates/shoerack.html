@@ -105,11 +105,13 @@
                             {% comment %} <td>{{brand}}</td>
                             <td>{{row.Model_name}}</td> {% endcomment %}
                             <td>{{row.0.LineUp_Brand}}</td>
-                            <td>{{row.2.Model_name}}</td>
+                            <td>{{row.2.ShoesExp_Shoe.Model_name}}</td>
                             <td>{{row.2.ShoesExp_Size}}</td>
                             <td>
-                                <form action="#" method="POST">
-                                    <input type="button" value="Delete!" type="submit"/>
+                                <form action="{% url 'shoerack' %}" method="POST">
+                                {% csrf_token %}
+                                    <input action="{% url 'shoerack' %}"  value="Delete!" type="submit" name="run_Delete"/>
+                                    <input type="hidden" name="shoesexp_user_pk" value="{{row.2.pk}}"/>
                                     <input type="hidden" name="user_id" value="{{user.id}}"/>
                                 </form>
                             </td>
@@ -124,12 +126,15 @@
                 <div class="buttonList">
                     <form action="{% url 'shoerack' %}" method="POST" name="Delete">
                     {% csrf_token %}
-                        <button class="button_Delete" type="submit" name="run_Deltete">All Delete!</button>
+                        <button class="button_Delete" type="submit" name="run_AllDelete">All Delete!</button>
+                        <input type="hidden" name="user_id" value="{{user.id}}"/>
                     </form>
                     <br>
                     <br>
-                    <form action="{% url 'shoerack' %}" method="POST" name="Measure">
+                    <form action="{% url 'result' %}" method="POST" name="Measure">
                     {% csrf_token %}
+                        <input type="hidden" name="user" value="{{user.id}}"/>
+                        <input type="hidden" name="tgt" value="{{tgt}}"/>
                         <button class="button_Measure" type="submit" name="run_Measure">Measure!</button>
                     </form>
                 </div>
