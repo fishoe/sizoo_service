@@ -1,4 +1,4 @@
-from ..models import LineUp, ShoesData, ShoesExp, UserInfo, ServiceResult
+from sizoo_proApp.models import LineUp, ShoesData, ShoesExp, UserInfo, ServiceResult
 
 def predict(user, tgt):
     '''

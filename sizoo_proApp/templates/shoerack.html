@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Size to Size</title>
-</head>
-<body>
-    <script>
+    {{ sd|json_script:"shoes_data" }}
+    <script type="text/javascript">
         var brand
 
         function shoeSize() {
@@ -22,8 +21,45 @@
         function getBrand() {
             brand = document.getElementById("select_brand").value;
         }
-        
+
+        var shoes=JSON.parse(document.getElementById('shoes_data').textContent)
+
+        function setBrand(){
+            ks = Object.keys(shoes);
+            sel_br = document.getElementById('select_brand');
+            // console.log(ks.length);
+            for(let i = 0; i < ks.length;i++){
+                op = document.createElement("option");
+                op.text = ks[i];
+                op.value = ks[i];
+                sel_br.options.add(op);
+            }
+        }
+        function setModels(aa){
+            idx = aa.selectedIndex;
+            val = aa.options[idx].value;
+            sel_md = document.getElementById('brand_model');
+            n = sel_md.length
+            for(let i = 0; i<n;i++){
+                sel_md.remove(0);
+            }
+
+            for(let i = 0; i< shoes[val].length;i++){
+                op = document.createElement("option");
+                op.text = shoes[val][i];
+                op.value = shoes[val][i];
+                sel_md.options.add(op);
+            }
+        }
+
+        window.onload=function()
+        {
+            setBrand();
+            setModels(document.getElementById('select_brand'))
+        };
     </script>
+</head>
+<body>
     <!-- 전체 화면 영역 -->
     <div calss="wrapper">
         <!-- Header : 로고, 프로필 -->
@@ -54,26 +90,26 @@
                         </tr>
                         <tr>
                             <td>
-                                <select id="select_brand" name="brand" onchange="getBrand()">
+                                <select id="select_brand" name="brand" onchange="setModels(this)">
                                     <!-- LineUP에서 brand 가져옴 -->
-                                    {% for row in lineupAll %}
-                                        <option value="{{row.LineUp_Brand}}">{{row.LineUp_Brand}}</option>
-                                    {% endfor %}
+                                    <!-- {% for row in lineupAll %}
+                                        <option value="{{row.LineUp_Brand}}" onchange="">{{row.LineUp_Brand}}</option>
+                                    {% endfor %} -->
                                 </select>
                             </td>
                             <td>
-                                <select name="brand_model">
-                                    {% for row in shoesdataAll %}
+                                <select id="brand_model" name ='brand_model'>
                                     <!-- ShoesData에서 name 가져옴 -->
+                                    <!-- {% for row in shoesdataAll %}
                                         <option value="{{row.Model_name}}">{{row.Model_name}}</option>
-                                    {% endfor %}
+                                    {% endfor %} -->
                                 </select>
                             </td>
                             <td>
                                 <select name="size">
                                     <option value="" disabled selected>Choose your size</option>
                                     <script>
-                                        shoeSize()
+                                        shoeSize();
                                     </script>
                                 </select>
                             </td>

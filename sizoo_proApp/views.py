@@ -7,8 +7,9 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 import re
 
-# Create your views here.
+import json
 
+# Create your views here.
 
 ERROR_MSG = {
     # ID
@@ -46,6 +47,7 @@ shoerackDict = {
     'lineupAll':lineupAll, 
     'shoesdataAll':shoesdataAll, 
     'shoesdata': None}
+
 
 
 def home(request):
@@ -134,7 +136,19 @@ def login(request):
         # shoerackDict
         shoerackDict['shoesdata'] = zip(shoeexpLineUp_list, list(shoesdataAll), list(shoeexpAll))
         
-        
+        q = ShoesData.objects.all()
+
+        t = {}
+
+        for i in q:
+            brand = i.Model_lineUp.LineUp_Brand
+            if brand in t :
+                t[brand].append(i.Model_name)
+            else :
+                t[brand] = [i.Model_name]
+
+        shoerackDict['sd'] = t
+
         # result
         result = render(request, 'shoerack.html', shoerackDict)
         
@@ -298,9 +312,7 @@ def shoerack(request):
             # result
             result = result(request)
     
-    
     return result 
-
 
 
 def shoeadd(request):
@@ -406,7 +418,7 @@ def shoedelete(request):
         shoeexpLineUp = ShoesData.objects.filter(Model_name=Model_name)[0].Model_lineUp
         shoeexpLineUp_list.append(shoeexpLineUp)
     
-    # shoerackDict
+    shoerackDict
     shoerackDict['shoesdata'] = zip(shoeexpLineUp_list, list(shoesdataAll), list(shoeexpAll))
     
     result = render(request, 'shoerack.html', shoerackDict)
