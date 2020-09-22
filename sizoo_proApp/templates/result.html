@@ -20,6 +20,7 @@
                 {% if user.is_authenticated %}
                 <h4>Welcome {{user.get_username}}!
                     <a href="{% url 'logout' %}">logouts</a></h4>
+                {% endif %}
             </div>
         </div>
         <div class="main_container">
@@ -29,17 +30,38 @@
                         {% csrf_token %}
                         <button class="button_Re_shoerack" type="submit" name="run_Re_shoerack">Return to shoe rack!</button>
                     </form> {% endcomment %} -->
-                    <form autocomplete="off" action="{% url 'result' %}">
-                        <div class="target_search_autocomplete">
-                            <input id="target_search" type="text" name="target_model" placeholder="사이즈를 찾을 신발을 입력하세요" />
-                            <!-- css에서 textarea hidden해줄 것 -->
-                            <textarea id="shoes_list" style="visibility: hidden;" onload="shoesList()">
-                                {% for row in shoesdataAll.all %}
-                                    {{row.Model_name}},
-                                {% endfor %}
-                            </textarea>
-                        </div>
-                        <input type="submit" />
+                    <form action="{% url 'shoerack' %}" method="POST" name="Add">
+                        {% csrf_token %}
+                        <table>
+                            <tr>
+                                <th>Brand</th>
+                                <th>Product</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select id="select_brand" name="brand" onchange="getBrand()">
+                                        <!-- LineUP에서 brand 가져옴 -->
+                                        {% for row in lineupAll %}
+                                            <option value="{{row.LineUp_Brand}}">{{row.LineUp_Brand}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="brand_model">
+                                        {% for row in shoesdataAll %}
+                                        <!-- ShoesData에서 name 가져옴 -->
+                                            <option value="{{row.Model_name}}">{{row.Model_name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <button class="button_Add" type="submit" name="run_Add">find size</button>
+                                    <input type="hidden" name="user_id" value="{{user.id}}"/>
+                                </td>
+                            </tr>
+                            
+                        </table>
                     </form>
                 </div>
                 <div class="shoeRack_list">
@@ -70,7 +92,7 @@
                 </div>
             </div>
             <div class="result">
-                <p>{{user.get_username}}의 {{target_model}} 추천 사이즈는</p>
+                <p>{{user.get_username}}의 {{target_model}} 추천 사이즈는 </p>
                 <p>{{result}} </p>
             </div>
         </div>

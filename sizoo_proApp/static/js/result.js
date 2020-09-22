@@ -85,3 +85,5 @@ function autocomplete(inp, arr) {
 var shoesNames = shoesDataList;
 
 autocomplete(document.getElementById("target_search"), shoesNames);
+
+
