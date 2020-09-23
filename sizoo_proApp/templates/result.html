@@ -5,109 +5,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="../static/shoerack.css" rel="stylesheet" type="shoerack/css"/>
     <title>Size to Size</title>
-    <script src="../static/js/result.js"></script>
-</head>
+    <link href="../static/result.css" rel="stylesheet" type="text/css"/>
+    {{ sd|json_script:"shoes_data" }}
+    <script type="text/javascript">
+        var brand
 
+        function shoeSize() {
+            var i = 220;
+            var limitSize = 305;
+            while(i < limitSize){
+                document.write("<option name='shoes_size' value="+i+">"+i+"</option>")
+                i += 5;
+            }   
+        } 
+        
+        function getBrand() {
+            brand = document.getElementById("select_brand").value;
+        }
+
+        var shoes=JSON.parse(document.getElementById('shoes_data').textContent)
+
+        function setBrand(){
+            ks = Object.keys(shoes);
+            sel_br = document.getElementById('select_brand');
+            // console.log(ks.length);
+            for(let i = 0; i < ks.length;i++){
+                op = document.createElement("option");
+                op.text = ks[i];
+                op.value = ks[i];
+                sel_br.options.add(op);
+            }
+        }
+        function setModels(aa){
+            idx = aa.selectedIndex;
+            val = aa.options[idx].value;
+            sel_md = document.getElementById('brand_model');
+            n = sel_md.length
+            for(let i = 0; i<n;i++){
+                sel_md.remove(0);
+            }
+
+            for(let i = 0; i< shoes[val].length;i++){
+                op = document.createElement("option");
+                op.text = shoes[val][i];
+                op.value = shoes[val][i];
+                sel_md.options.add(op);
+            }
+        }
+
+        window.onload=function()
+        {
+            setBrand();
+            setModels(document.getElementById('select_brand'))
+        };
+    </script>
+</head>
 <body>
-    <h1>result page</h1>
     <div class="wrapper">
         <div class="header">
             <div class="logo">
-                <img src="" alt="logo" width="500" height="200">
+                <figure>
+                    <img src="../static/media/black border2.png" alt="logo" width="300">
+                </figure>
             </div>
             <div class="profile">
+                <img src="../static/media/empty_profile_man.jpg" alt="profile" height="50">
                 {% if user.is_authenticated %}
                 <h4>Welcome {{user.get_username}}!
                     <a href="{% url 'logout' %}">logouts</a></h4>
                 {% endif %}
             </div>
         </div>
-        <div class="big_logo">
-            <img src="media/black border2.png" alt="logo" width="400" height="80">
-        </div>
-        <br>
-        <br>
         <div class="main_container">
             <div class="input">
-                <div class="target_model">
-                    <!-- {% comment %}<form action="{% url 'result' %}" method="POST" name="Re_shoerack">
-                        {% csrf_token %}
-                        <button class="button_Re_shoerack" type="submit" name="run_Re_shoerack">Return to shoe rack!</button>
-                    </form> {% endcomment %} -->
-                    <form action="{% url 'shoerack' %}" method="POST" name="Add">
-                        {% csrf_token %}
-                        <table>
-                            <tr>
-                                <th>Brand</th>
-                                <th>Product</th>
-                                <th>&nbsp;</th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <select id="select_brand" name="brand" onchange="getBrand()">
-                                        <!-- LineUP에서 brand 가져옴 -->
-                                        {% for row in lineupAll %}
-                                            <option value="{{row.LineUp_Brand}}">{{row.LineUp_Brand}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="brand_model">
-                                        {% for row in shoesdataAll %}
-                                        <!-- ShoesData에서 name 가져옴 -->
-                                            <option value="{{row.Model_name}}">{{row.Model_name}}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
-                                    <button class="button_Add" type="submit" name="run_Add">find size</button>
-                                    <input type="hidden" name="user_id" value="{{user.id}}"/>
-                                </td>
-                            </tr>
-                            
-                        </table>
-                    </form>
+                <div class="column_label">
+                    <label class="label_brand">Brand</label>
+                    <label class="label_product">Product</label>
                 </div>
-                <div class="shoeRack_list">
-                    <table>
-                        <tr>
-                            <th>Brand</th>
-                            <th>Product</th>
-                            <th>Size</th>
-                            <th>&nbsp;</th>
-                        </tr>
-                        {% csrf_token %}
-                        {% for row in shoesdata %}
-                        <tr>
-                            {% comment %} <td>{{brand}}</td>
-                            <td>{{row.Model_name}}</td> {% endcomment %}
-                            <td>{{row.0.LineUp_Brand}}</td>
-                            <td>{{row.2.Model_name}}</td>
-                            <td>{{row.2.ShoesExp_Size}}</td>
-                            <td>
-                                <form action="#" method="POST">
-                                    <input type="button" value="Delete!" type="submit"/>
-                                    <input type="hidden" name="user_id" value="{{user.id}}"/>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
+                <form action="{% url 'result' %}" method="POST" name="find size" id="form_target">
+                <div class="target">
+                    {% csrf_token %}
+                    <div class="target_brand">
+                        <select id="select_brand" name="brand" onchange="setModels(this)"></select>
+                    </div>
+                    <div class="target_model">
+                        <select id="brand_model" name="tgt"></select>
+                    </div>
+                    
+                </div>
+                <div class="buttons">
+                    <div class="target_find">
+                        <button class="button_Add" type="submit" name="find_size">find size</button>
+                        <input type="hidden" name="user_id" value="{{user.id}}"/>
+                    </div>
+                </form>
+                <form action="{% url 'shoerack' %}" method="POST" name="back_shoerack">
+                    {% csrf_token %}
+                    <div class="return_shoeRack">
+                        <button class="button_Add" type="submit" name="back_shoerack">shoerack</button>
+                        <input type="hidden" name="user_id" value="{{user.id}}"/>
+                    </div>
+                </form>
                 </div>
             </div>
             <div class="result">
-                <p>{{user.get_username}}의 {{target_model}} 추천 사이즈는 </p>
-                <p>{{result}} </p>
+                <p>We suggest <strong>{{result}}</strong> about the <strong>{{target_model}}</strong> based on the AI!</p>
             </div>
         </div>
         <div class="footer">
             <p>Company</p>
         </div>
     </div>
-    
-    
 </body>
-
 </html>
+
+
+<!-- shoeRack 돌아가는 것 처리하면 css 수정해야함 -->
+                    

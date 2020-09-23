@@ -1,4 +1,3 @@
-
 from django.shortcuts import render
 
 from django.shortcuts import redirect
@@ -7,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 import re
 
+from .predict.predict import predict
 import json
 
 # Create your views here.
@@ -36,17 +36,45 @@ ERROR_MSG = {
     'Size_CHECK': 'Please check size selection',
     
     # ShoesData
-    'ShoeData_CHECK': 'Sorry, we could not find this model',
+    'ShoeData_CHECK': 'Sorry, we could not find this model'
     }
 
 
-# global variables
-lineupAll = LineUp.objects.all()
-shoesdataAll = ShoesData.objects.all()
-shoerackDict = {
-    'lineupAll':lineupAll, 
-    'shoesdataAll':shoesdataAll, 
-    'shoesdata': None}
+def shoerackLoad(shoesexp_user):
+    
+    # check point
+    print("def__shoerackLoad")
+    
+    # variables for shoerackDict
+    q = ShoesData.objects.all()
+    t = {}
+    for i in q:
+        brand = i.Model_lineUp.LineUp_Brand
+        if brand in t :
+            t[brand].append(i.Model_name)
+        else :
+            t[brand] = [i.Model_name]
+    
+    shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user)
+    shoeexpLineUp_list = []
+    for i in range(len(shoeexpAll)):
+        
+        Model_name = shoeexpAll[i].ShoesExp_Shoe.Model_name
+        shoeexpLineUp = ShoesData.objects.filter(Model_name=Model_name)[0].Model_lineUp
+        shoeexpLineUp_list.append(shoeexpLineUp)
+    
+    # shoerackDict
+    shoerackDict = {
+        'sd': t,
+        'shoesdata': zip(shoeexpLineUp_list, list(shoeexpAll)),
+        'shoeexpAll': shoeexpAll
+        }
+    
+    # result
+    result = shoerackDict
+    
+    
+    return result
 
 
 
@@ -114,41 +142,12 @@ def login(request):
         # login
         auth.login(request, userinfo_user)
         
-        # All Brands from LineUp
-        lineupAll = LineUp.objects.all()
-        
-        # All Shoes from ShesData
-        shoesdataAll = ShoesData.objects.all()
-        
-        # shoerackDict
-        shoerackDict = {'lineupAll':lineupAll, 'shoesdataAll':shoesdataAll}
-        
-        # shoerack
+        # shoesexp_user
         shoesexp_user = UserInfo.objects.filter(UserInfo_User=userinfo_user)[0]
-        shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user)
-        shoeexpLineUp_list = []
-        for i in range(len(shoeexpAll)):
-            
-            Model_name = shoeexpAll[i].ShoesExp_Shoe.Model_name
-            shoeexpLineUp = ShoesData.objects.filter(Model_name=Model_name)[0].Model_lineUp
-            shoeexpLineUp_list.append(shoeexpLineUp)
         
         # shoerackDict
-        shoerackDict['shoesdata'] = zip(shoeexpLineUp_list, list(shoesdataAll), list(shoeexpAll))
+        shoerackDict = shoerackLoad(shoesexp_user)
         
-        q = ShoesData.objects.all()
-
-        t = {}
-
-        for i in q:
-            brand = i.Model_lineUp.LineUp_Brand
-            if brand in t :
-                t[brand].append(i.Model_name)
-            else :
-                t[brand] = [i.Model_name]
-
-        shoerackDict['sd'] = t
-
         # result
         result = render(request, 'shoerack.html', shoerackDict)
         
@@ -244,18 +243,11 @@ def signup(request):
         # login
         auth.login(request, userinfo_user)
         
-        # shoerack
+        # shoesexp_user
         shoesexp_user = UserInfo.objects.filter(UserInfo_User=userinfo_user)[0]
-        shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user)
-        shoeexpLineUp_list = []
-        for i in range(len(shoeexpAll)):
-            
-            Model_name = shoeexpAll[i].ShoesExp_Shoe.Model_name
-            shoeexpLineUp = ShoesData.objects.filter(Model_name=Model_name)[0].Model_lineUp
-            shoeexpLineUp_list.append(shoeexpLineUp)
         
         # shoerackDict
-        shoerackDict['shoesdata'] = zip(shoeexpLineUp_list, list(shoesdataAll), list(shoeexpAll))
+        shoerackDict = shoerackLoad(shoesexp_user)
         
         # result
         result = render(request, 'shoerack.html', shoerackDict)
@@ -287,6 +279,15 @@ def shoerack(request):
     # check point
     print("def__shoerack")
     
+    # user_id
+    user_id = request.POST.get('user_id')   
+    
+    # shoesexp_user
+    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)[0]
+    
+    # shoerackDict
+    shoerackDict = shoerackLoad(shoesexp_user)
+    
     # result
     result = render(request, 'shoerack.html', shoerackDict)
     
@@ -307,7 +308,7 @@ def shoerack(request):
             # result
             result = shoeAlldelete(request)
         
-        if 'run_Measure' in request.POST:
+        if 'run_Search' in request.POST:
             
             # result
             result = result(request)
@@ -328,11 +329,11 @@ def shoeadd(request):
     }
     
     user_id = request.POST.get('user_id')    
-    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)
+    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)[0]
     shoeFromPost = request.POST.get('brand_model')
     shoesexp_shoe = ShoesData.objects.filter(Model_name=shoeFromPost)
     shoesexp_size = request.POST.get('size')
-    print('>>>>>>>>>>', shoesexp_shoe[0])
+    
     
     try:
         if len(shoeFromPost) == 0:
@@ -347,25 +348,16 @@ def shoeadd(request):
             
             raise Exception('ShoeData_CHECK')
         
-        print('+++++++++++++++++++++++++++++++++++++')
+        
         # ShoesExp create
         ShoesExp.objects.create(
-            ShoesExp_User = shoesexp_user[0],
+            ShoesExp_User = shoesexp_user,
             ShoesExp_Shoe = shoesexp_shoe[0],
             ShoesExp_Size = int(shoesexp_size)
             )
         
-        # shoerack
-        shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user[0])
-        shoeexpLineUp_list = []
-        for i in range(len(shoeexpAll)):
-            
-            Model_name = shoeexpAll[i].ShoesExp_Shoe.Model_name
-            shoeexpLineUp = ShoesData.objects.filter(Model_name=Model_name)[0].Model_lineUp
-            shoeexpLineUp_list.append(shoeexpLineUp)
-        
         # shoerackDict
-        shoerackDict['shoesdata'] = zip(shoeexpLineUp_list, list(shoesdataAll), list(shoeexpAll))
+        shoerackDict = shoerackLoad(shoesexp_user)
         
         # result
         result = render(request, 'shoerack.html', shoerackDict)
@@ -375,17 +367,8 @@ def shoeadd(request):
         context['error']['state'] = True
         context['error']['msg'] = ERROR_MSG[e.args[0]]
         
-        # shoerack
-        shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user[0])
-        shoeexpLineUp_list = []
-        for i in range(len(shoeexpAll)):
-            
-            Model_name = shoeexpAll[i].ShoesExp_Shoe.Model_name
-            shoeexpLineUp = ShoesData.objects.filter(Model_name=Model_name)[0].Model_lineUp
-            shoeexpLineUp_list.append(shoeexpLineUp)
-        
         # shoerackDict
-        shoerackDict['shoesdata'] = zip(shoeexpLineUp_list, list(shoesdataAll), list(shoeexpAll))
+        shoerackDict = shoerackLoad(shoesexp_user)
         
         # result
         result = render(request, 'shoerack.html', shoerackDict)
@@ -399,28 +382,23 @@ def shoedelete(request):
     # check point
     print("def__shoedelete")
     
-    # shoerack
+    # shoesexp user
     shoesexp_user_pk = request.POST.get('shoesexp_user_pk')
-    print(shoesexp_user_pk, '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     
-    delTargetUser = ShoesExp.objects.filter(pk=shoesexp_user_pk).delete()
-    # shoealldelete
+    print(ShoesExp.objects.filter(pk=shoesexp_user_pk))
+    # shoedelete
+    ShoesExp.objects.filter(pk=shoesexp_user_pk).delete()
     
+    # user_id
+    user_id = request.POST.get('user_id')
     
-    print('CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC')
-    user_id = request.POST.get('user_id')    
-    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)
-    shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user[0])
-    shoeexpLineUp_list = []
-    for i in range(len(shoeexpAll)):
-        
-        Model_name = shoeexpAll[i].ShoesExp_Shoe.Model_name
-        shoeexpLineUp = ShoesData.objects.filter(Model_name=Model_name)[0].Model_lineUp
-        shoeexpLineUp_list.append(shoeexpLineUp)
+    # shoesexp_user
+    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)[0]
     
-    shoerackDict
-    shoerackDict['shoesdata'] = zip(shoeexpLineUp_list, list(shoesdataAll), list(shoeexpAll))
+    # shoerackDict
+    shoerackDict = shoerackLoad(shoesexp_user)
     
+    # result
     result = render(request, 'shoerack.html', shoerackDict)
     
     
@@ -432,29 +410,76 @@ def shoeAlldelete(request):
     # check point
     print("def__shoeAlldelete")
     
-    # shoerack
-    user_id = request.POST.get('user_id')    
-    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)
-    shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user[0])
+    # user_id
+    user_id = request.POST.get('user_id')   
     
-    for i in range(len(shoeexpAll)):
-        
-        shoealldelete = shoeexpAll[i].delete()
+    # shoesexp_user
+    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)[0]
+    # shoeexpAll = ShoesExp.objects.filter(ShoesExp_User=shoesexp_user)
     
-    result = redirect('shoerack')
+    # shoerackDict
+    shoerackDict = shoerackLoad(shoesexp_user)
+    
+    # shoealldelete
+    for i in range(len(shoerackDict['shoeexpAll'])):
+    
+        shoerackDict['shoeexpAll'][i].delete()
+    
+    # update shoerackDict
+    shoerackDict = shoerackLoad(shoesexp_user)
+    
+    # result
+    result = render(request, 'shoerack.html', shoerackDict)
     
     return result
 
 
 def result(request):
     
-    result = render(request, 'result.html', shoerackDict)
     # check point
     print("def__result")
     
-    # user = request.POST.get('user')
-    # tgt = request.POST.get('tgt')
+    # user
+    user_id = request.POST.get('user_id')   
     
-    # result = predict(user, tgt)
+    # shoesexp_user
+    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)[0]
+    
+    # shoerackDict
+    shoerackDict = shoerackLoad(shoesexp_user)
+    
+    # result
+    result = render(request, 'result.html', shoerackDict)
+    
+    if request.method == 'POST':
+        
+        if 'find_size' in request.POST:
+            
+            result = findSize(request)
+            
+        if 'find_size' in request.POST:
+            
+            result = shoerack(request)
+    
+    
+    return result
+
+
+def findSize(request):
+    
+    # check point
+    print("def__findSize")
+    
+    # user = request.POST.get('user_id')
+    # tgt = request.POST.get('tgt', None)
+
+    # if (tgt == None):
+    #     return redirect('result.html')
+    
+    # predDict = {
+    #     'pred' : predict(user, tgt)
+    # }
+
+    # result = render(request, 'result.html', predict)
     
     return result
