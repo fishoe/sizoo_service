@@ -8,8 +8,27 @@
     <title>Size to Size</title>
     <link href="../static/result.css" rel="stylesheet" type="text/css"/>
     {{ sd|json_script:"shoes_data" }}
+    {% csrf_token %}
     <script type="text/javascript">
-        var brand
+        const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        function predict(){    
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'result' %}", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.setRequestHeader('X-CSRFToken', csrf_token);
+            xhr.onreadystatechange = function (e) {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    res = JSON.parse(xhr.responseText);
+                    document.getElementById('size').innerText = res['size'];
+                }
+            };
+            post_context={};
+            idx = document.getElementById('brand_model').selectedIndex;
+            model = document.getElementById('brand_model').options[idx].value;
+            post_context['target'] = model;
+
+            xhr.send(JSON.stringify(post_context));
+        }
 
         function shoeSize() {
             var i = 220;
@@ -83,9 +102,8 @@
                     <label class="label_brand">Brand</label>
                     <label class="label_product">Product</label>
                 </div>
-                <form action="{% url 'result' %}" method="POST" name="find size" id="form_target">
+                <form name="find size" id="form_target">
                 <div class="target">
-                    {% csrf_token %}
                     <div class="target_brand">
                         <select id="select_brand" name="brand" onchange="setModels(this)"></select>
                     </div>
@@ -96,8 +114,7 @@
                 </div>
                 <div class="buttons">
                     <div class="target_find">
-                        <button class="button_Add" type="submit" name="find_size">find size</button>
-                        <input type="hidden" name="user_id" value="{{user.id}}"/>
+                        <input class="button_Add" type="button" name="find_size" onclick="predict()" value="find size">
                     </div>
                 </form>
                 <form action="{% url 'shoerack' %}" method="POST" name="back_shoerack">
@@ -110,7 +127,7 @@
                 </div>
             </div>
             <div class="result">
-                <p>We suggest <strong>{{result}}</strong> about the <strong>{{target_model}}</strong> based on the AI!</p>
+                <p>We suggest <strong id="size">{{result}}</strong> about the <strong>{{target_model}}</strong> based on the AI!</p>
             </div>
         </div>
         <div class="footer">

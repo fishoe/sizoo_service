@@ -6,8 +6,11 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 import re
 
+from django.db.models import Model
+
 from .predict.predict import predict
 import json
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -434,36 +437,87 @@ def shoeAlldelete(request):
     return result
 
 
-def result(request):
+# def result(request):
     
-    # check point
-    print("def__result")
+#     # check point
+#     print("def__result")
     
-    # user
-    user_id = request.POST.get('user_id')   
+#     # user
+#     user_id = request.POST.get('user_id')   
     
-    # shoesexp_user
-    shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)[0]
+#     # shoesexp_user
+#     shoesexp_user = UserInfo.objects.filter(UserInfo_User_id=user_id)[0]
     
-    # shoerackDict
-    shoerackDict = shoerackLoad(shoesexp_user)
+#     # shoerackDict
+#     shoerackDict = shoerackLoad(shoesexp_user)
     
-    # result
-    result = render(request, 'result.html', shoerackDict)
+#     # result
+#     result = render(request, 'result.html', shoerackDict)
     
-    if request.method == 'POST':
+#     if request.method == 'POST':
         
-        if 'find_size' in request.POST:
+#         if 'find_size' in request.POST:
             
-            result = findSize(request)
+#             result = findSize(request)
             
-        if 'find_size' in request.POST:
+#         if 'find_size' in request.POST:
             
-            result = shoerack(request)
+#             result = shoerack(request)
     
     
-    return result
+#     return result
 
+
+def result(request):
+    print("def__result")
+
+    shoerackDict={}
+
+    q = ShoesData.objects.all()
+    t = {}
+    for i in q:
+        brand = i.Model_lineUp.LineUp_Brand
+        if brand in t :
+            t[brand].append(i.Model_name)
+        else :
+            t[brand] = [i.Model_name]
+
+    shoerackDict['sd'] = t
+
+    if request.method == 'POST' : #AJAX part
+        req_json = eval(request.body)
+        #print(req_json)
+        tgt = req_json['target']
+        if tgt is None:
+            #print(request.body)
+            return JsonResponse({'size':-1})
+        user_pk = UserInfo.objects.get(UserInfo_User__username=request.user).pk
+        res = predict(user_pk, tgt)
+        try:
+            q = ServiceResult.objects.get(User_id=user_pk,tgtShoe=ShoesData.objects.get(Model_name=tgt))
+            q.result=res
+            q.save()
+        except ServiceResult.DoesNotExist as e:
+            q = ServiceResult.objects.create(User_id=user_pk,tgtShoe=ShoesData.objects.get(Model_name=tgt),result=res)
+            q.save()
+
+        return JsonResponse({'size': res})
+
+    q = ShoesExp.objects.filter(ShoesExp_User__UserInfo_User__username=request.user)
+
+    t=[]
+    for i in q :
+        t.append((i.ShoesExp_Shoe.Model_lineUp.LineUp_Brand,i.ShoesExp_Shoe.Model_name,i.ShoesExp_Size))
+    shoerackDict['myract'] = t
+
+    result = render(request, 'result.html', shoerackDict)
+
+    # check point
+    # user = request.POST.get('user')
+    # tgt = request.POST.get('tgt')
+    # result = predict(user, tgt)
+
+    return result
 
 def findSize(request):
     
