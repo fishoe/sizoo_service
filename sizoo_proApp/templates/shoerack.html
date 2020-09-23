@@ -74,12 +74,7 @@
         </div>
         <div class="main_container">
             <div class="measure">
-                <form action="{% url 'result' %}" method="POST" name="Measure">
-                {% csrf_token %}
-                    <input type="hidden" name="user_id" value="{{user.id}}"/>
-                    <input type="hidden" name="tgt" value="{{tgt}}"/>
-                    <button class="button_Search" type="submit" name="run_Search">🕵️‍♂️Go searching for shoes size</button>
-                </form>
+                <input class="button_Search" type="button" name="run_Search" onclick="location.href = '{% url 'result' %}'" value="🕵️‍♂️사이즈 찾으러 가기">
             </div>
             <div class="shoeRack_title">
                 <span>↓Add your shoes!!👟↓</span>

@@ -114,8 +114,18 @@ th {
     justify-content: center;
 }
 
-.measure button {
+.measure .button_Search {
+    text-transform: uppercase;
+    outline: 0;
+    background: #444444;
     width: 200px;
+    border: 0;
+    padding: 12px;
+    color: #FFFFFF;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
     font-size: 16px;
 }
 
