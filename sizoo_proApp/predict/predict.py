@@ -10,7 +10,7 @@ def predict(user, tgt):
     '''
 
     #get tgt lineup
-    tgt_data = ShoesData.objects.get(Model_code=tgt)
+    tgt_data = ShoesData.objects.get(Model_name=tgt)
     tgt_lineup = tgt_data.Model_lineUp
     tgt_brand = tgt_lineup.LineUp_Brand
 

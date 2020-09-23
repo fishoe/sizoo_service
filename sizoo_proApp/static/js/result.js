@@ -11,7 +11,6 @@ function shoesList() {
     };
 }
 
-
 // autoComplete for search
 function autocomplete(inp, arr) {
     var currentFocus;
@@ -82,8 +81,8 @@ function autocomplete(inp, arr) {
     });
 }
 
-var shoesNames = shoesDataList;
+//var shoesNames = shoesList();
 
-autocomplete(document.getElementById("target_search"), shoesNames);
+//autocomplete(document.getElementById("target_search"), shoesNames);
 
 

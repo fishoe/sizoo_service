@@ -167,12 +167,12 @@
                     </form>
                     <br>
                     <br>
-                    <form action="{% url 'result' %}" method="POST" name="Measure">
+                    <!-- <form action="{% url 'result' %}" method="GET" name="Measure">
                     {% csrf_token %}
                         <input type="hidden" name="user" value="{{user.id}}"/>
                         <input type="hidden" name="tgt" value="{{tgt}}"/>
-                        <button class="button_Measure" type="submit" name="run_Measure">Measure!</button>
-                    </form>
+                    </form> -->
+                    <button class="button_Measure" type="submit" name="run_Measure" onclick="location.href = '{% url 'result' %}'">Measure!</button>
                 </div>
             </div>
         </div>
