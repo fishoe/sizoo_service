@@ -5,10 +5,8 @@ from .models import UserInfo, LineUp, ShoesData, ServiceResult, ShoesExp
 from django.contrib.auth.models import User
 from django.contrib import auth
 import re
-
-from django.db.models import Model
-
 from .predict.predict import predict
+
 import json
 from django.http import JsonResponse
 
