@@ -59,36 +59,33 @@
     <div class="wrapper">
         <!-- Header : 로고, 프로필 -->
         <div class="header">
-            <div class="whitebox">
-                
-            </div>
-            <div class="big_logo">
-                <img src="../static/media/파란색 테두리.jpg" alt="logo" width="300">
+            <div class="logo">
+                <figure>
+                    <img src="../static/media/black border2.png" alt="logo" width="300">
+                </figure>
             </div>
             <div class="profile">
                 <img src="../static/media/empty_profile_man.jpg" alt="profile" height="50">
-                <br>
                 {% if user.is_authenticated %}
-                <h4>Welcome {{user.get_username}}!
+                <h4>Welcome {{user.get_username}}!<br>
                 <a href="{% url 'logout' %}">logouts</a></h4>
+                {% endif %}
             </div>
         </div>
-        <br>
-        <br>
         <div class="main_container">
             <div class="measure">
                 <form action="{% url 'result' %}" method="POST" name="Measure">
                 {% csrf_token %}
                     <input type="hidden" name="user_id" value="{{user.id}}"/>
                     <input type="hidden" name="tgt" value="{{tgt}}"/>
-                    <button class="button_Search" type="submit" name="run_Search">🕵️‍♂️사이즈 찾으러 가기</button>
+                    <button class="button_Search" type="submit" name="run_Search">🕵️‍♂️Go searching for shoes size</button>
                 </form>
             </div>
-            <br>
-            
-            <br>
-            <h2>↓당신의 👟신발을 추가하세요↓</h2>
+            <div class="shoeRack_title">
+                <span>↓Add your shoes!!👟↓</span>
+            </div>
             <div class="shoeRack_add">
+                
                 <form action="{% url 'shoerack' %}" method="POST" name="Add">
                     {% csrf_token %}
                     
@@ -122,11 +119,7 @@
                         
                     </table>
                 </form>
-                {% comment %} {% if error.state %}
-                    <h2>{{error.msg}}</h2>
-                {% endif %} {% endcomment %}
             </div>
-                <br>
             <div class="shoeList">
                 <table>
                     <tr>
@@ -135,8 +128,8 @@
                         <th>Size</th>
                         <th>&nbsp;</th>
                     </tr>
-                    {% csrf_token %}
-                    {% for row in shoesdata %}
+                    <!-- {% csrf_token %}
+                    {% for row in shoesdata %} -->
                     <tr>
                         <td>{{row.0.LineUp_Brand}}</td>
                         <td>{{row.1.ShoesExp_Shoe.Model_name}}</td>
@@ -144,24 +137,27 @@
                         <td>
                             <form action="{% url 'shoerack' %}" method="POST">
                             {% csrf_token %}
-                                <input action="{% url 'shoerack' %}"  value="Delete!" type="submit" name="run_Delete"/>
+                                <!-- <input action="{% url 'shoerack' %}"  value="Delete!" type="submit" name="run_Delete"/> -->
+                                <button type="submit" name="run_Delete">DELETE</button>
                                 <input type="hidden" name="shoesexp_user_pk" value="{{row.1.pk}}"/>
                                 <input type="hidden" name="user_id" value="{{user.id}}"/>
                             </form>
                         </td>
                     </tr>
-                    {% endfor %}
+                    <!-- {% endfor %} -->
                 </table>
             </div>
+            <div class="buttonList">
+                <form action="{% url 'shoerack' %}" method="POST" name="Delete">
+                {% csrf_token %}
+                    <button class="button_Delete" type="submit" name="run_AllDelete">All Delete!</button>
+                    <input type="hidden" name="user_id" value="{{user.id}}"/>
+                </form>
+            </div>
         </div>
-        <div class="buttonList">
-            <form action="{% url 'shoerack' %}" method="POST" name="Delete">
-            {% csrf_token %}
-                <button class="button_Delete" type="submit" name="run_AllDelete">All Delete!</button>
-                <input type="hidden" name="user_id" value="{{user.id}}"/>
-            </form>
+        <div class="footer">
+            <p>Company</p>
         </div>
-        {% endif %}
     </div>
 </body>
 </html>
