@@ -60,13 +60,23 @@ option {
 }
 
 .header .logo {
-    /* 로고 넣어보고 결정 */
-    margin: 30%;
+    width: 50%;
+    margin-left: 24%;
+}
+
+.header .logo figure img {
+    margin: auto;
 }
 
 .header .profile {
     width: 20%;
     padding: 0;
+
+    display: flex;
+    justify-content: center;
+}
+
+.header .profile img {
 }
 
 .main_container {

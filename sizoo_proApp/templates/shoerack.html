@@ -6,11 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="../static/shoerack.css" rel="stylesheet" >
     <title>Size to Size</title>
-    <!-- <link href="../static/shoerack.css" rel="stylesheet" type="text/css"/> -->
     {{ sd|json_script:"shoes_data" }}
     <script type="text/javascript">
-        var brand
-
         function shoeSize() {
             var i = 220;
             var limitSize = 305;
@@ -19,10 +16,6 @@
                 i += 5;
             }   
         } 
-        
-        function getBrand() {
-            brand = document.getElementById("select_brand").value;
-        }
 
         var shoes=JSON.parse(document.getElementById('shoes_data').textContent)
 
@@ -65,16 +58,15 @@
     <!-- 전체 화면 영역 -->
     <div class="wrapper">
         <!-- Header : 로고, 프로필 -->
-        <!-- <h2>Shoe Rack</h2> -->
         <div class="header">
             <div class="whitebox">
                 
             </div>
             <div class="big_logo">
-                <img src="../static/media/파란색 테두리.jpg" alt="logo" width="500" height="100">
+                <img src="../static/media/파란색 테두리.jpg" alt="logo" width="300">
             </div>
             <div class="profile">
-                <img src="../static/media/empty_profile_man.jpg" alt="logo" width="50" height="50">
+                <img src="../static/media/empty_profile_man.jpg" alt="profile" height="50">
                 <br>
                 {% if user.is_authenticated %}
                 <h4>Welcome {{user.get_username}}!
@@ -87,9 +79,9 @@
             <div class="measure">
                 <form action="{% url 'result' %}" method="POST" name="Measure">
                 {% csrf_token %}
-                    <input type="hidden" name="user" value="{{user.id}}"/>
+                    <input type="hidden" name="user_id" value="{{user.id}}"/>
                     <input type="hidden" name="tgt" value="{{tgt}}"/>
-                    <button class="button_Measure" type="submit" name="run_Measure">🕵️‍♂️사이즈 찾으러 가기</button>
+                    <button class="button_Search" type="submit" name="run_Search">🕵️‍♂️사이즈 찾으러 가기</button>
                 </form>
             </div>
             <br>
@@ -109,20 +101,10 @@
                         </tr>
                         <tr>
                             <td>
-                                <select id="select_brand" name="brand" onchange="setModels(this)">
-                                    <!-- LineUP에서 brand 가져옴 -->
-                                    {% for row in lineupAll %}
-                                        <option value="{{row.LineUp_Brand}}" onchange="">{{row.LineUp_Brand}}</option>
-                                    {% endfor %}
-                                </select>
+                                <select id="select_brand" name="brand" onchange="setModels(this)"></select>
                             </td>
                             <td>
-                                <select id="brand_model" name ='brand_model'>
-                                    <!-- ShoesData에서 name 가져옴 -->
-                                    {% for row in shoesdataAll %}
-                                        <option value="{{row.Model_name}}">{{row.Model_name}}</option>
-                                    {% endfor %}
-                                </select>
+                                <select id="brand_model" name ='brand_model'></select>
                             </td>
                             <td>
                                 <select name="size">
@@ -156,62 +138,30 @@
                     {% csrf_token %}
                     {% for row in shoesdata %}
                     <tr>
-                        {% comment %} <td>{{brand}}</td>
-                        <td>{{row.Model_name}}</td> {% endcomment %}
                         <td>{{row.0.LineUp_Brand}}</td>
-                        <td>{{row.2.ShoesExp_Shoe.Model_name}}</td>
-                        <td>{{row.2.ShoesExp_Size}}</td>
+                        <td>{{row.1.ShoesExp_Shoe.Model_name}}</td>
+                        <td>{{row.1.ShoesExp_Size}}</td>
                         <td>
                             <form action="{% url 'shoerack' %}" method="POST">
                             {% csrf_token %}
                                 <input action="{% url 'shoerack' %}"  value="Delete!" type="submit" name="run_Delete"/>
-                                <input type="hidden" name="shoesexp_user_pk" value="{{row.2.pk}}"/>
+                                <input type="hidden" name="shoesexp_user_pk" value="{{row.1.pk}}"/>
                                 <input type="hidden" name="user_id" value="{{user.id}}"/>
                             </form>
                         </td>
                     </tr>
                     {% endfor %}
                 </table>
-            
             </div>
         </div>
-                <!-- {% if state %}
-                    <h5>{{shoesexp_shoe}} {{shoesexp_size}}</h5>
-                {% endif %} -->
-        <br>
         <div class="buttonList">
             <form action="{% url 'shoerack' %}" method="POST" name="Delete">
             {% csrf_token %}
                 <button class="button_Delete" type="submit" name="run_AllDelete">All Delete!</button>
                 <input type="hidden" name="user_id" value="{{user.id}}"/>
             </form>
-            <br>
-            <br>
-            
         </div>
         {% endif %}
     </div>
-<!--     
-    <div class="test">
-        <textarea id="names" style="visibility: hidden;">
-            {% for row in shoesdataAll.all %}
-                {{row.Model_name}},
-            {% endfor %}
-        </textarea>
-    </div>
-    <script>
-        const shoesData = document.getElementById("names");
-        alert(shoesData.textContent);
-        var shoesDataList = [];
-        var datas = shoesData.textContent.split(',');
-        var i = 0;
-        while(i < (datas.length-1)) {
-            var data = datas[i].trim();
-            shoesDataList.push(data);
-            console.log(data);
-            i++;
-        };
-        console.log(shoesDataList);
-    </script> -->
 </body>
 </html>
