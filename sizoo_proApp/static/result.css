@@ -61,7 +61,10 @@ option {
 
 .header .logo {
     width: 50%;
-    margin-left: 24%;
+    margin-left: 25%;
+
+    display: flex;
+    justify-content: center;
 }
 
 .header .logo figure img {
@@ -74,6 +77,7 @@ option {
 
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .header .profile img {
@@ -97,7 +101,7 @@ option {
     height: 80%;
     margin: auto;
     /* background-color: #e2e4e3; */
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
     display: flex;
     flex-direction: column;
@@ -171,8 +175,18 @@ option {
     justify-content: center;
 }
 
-.input .buttons .target_find{
+.input .buttons .target_find .button_predict{
+    text-transform: uppercase;
+    outline: 0;
+    background: #444444;
     width: 100px;
+    border: 0;
+    padding: 12px;
+    color: #FFFFFF;
+    font-size: 14px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
     margin: 0 15px 0 20px;
 }
 

@@ -91,7 +91,7 @@
             <div class="profile">
                 <img src="../static/media/empty_profile_man.jpg" alt="profile" height="50">
                 {% if user.is_authenticated %}
-                <h4>Welcome {{user.get_username}}!
+                <h4>Welcome {{user.get_username}}!<br>
                     <a href="{% url 'logout' %}">logouts</a></h4>
                 {% endif %}
             </div>
@@ -114,7 +114,7 @@
                 </div>
                 <div class="buttons">
                     <div class="target_find">
-                        <input class="button_Add" type="button" name="find_size" onclick="predict()" value="find size">
+                        <input class="button_predict" type="button" name="find_size" onclick="predict()" value="find size">
                     </div>
                 </form>
                 <form action="{% url 'shoerack' %}" method="POST" name="back_shoerack">
